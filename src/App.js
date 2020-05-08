@@ -1,26 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import FemaleModels from "./Categories/FemaleModels";
+import Model from "./Profile/FemaleModels/Model/Model";
+import Socials from "./Profile/FemaleModels/Model/Socials";
+import Stats from "./Profile/FemaleModels/Model/Stats";
+import Agencies from "./Profile/FemaleModels/Model/Agencies";
+import LinkInsta from "./Profile/FemaleModels/Model/LinkInsta";
+import Home from "./Home/Home";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useParams,
+} from "react-router-dom";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/FemaleModels/:id/:name">
+          <FemaleModels />
+        </Route>
+
+        <Route path="/Model/:id">
+          <Model />
+        </Route>
+
+        <Route path="/socials">
+          <Socials />
+        </Route>
+
+        <Route path="/agencies">
+          <Agencies />
+        </Route>
+
+        <Route path="/stats">
+          <Stats />
+        </Route>
+        <Route path="/linkinsta">
+          <LinkInsta />
+        </Route>
+
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+    </Router>
   );
-}
+};
 
 export default App;
