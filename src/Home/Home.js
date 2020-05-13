@@ -116,7 +116,9 @@ const Home = () => {
                 nextPath("/FemaleModels/" + category.id + "/" + category.name)
               }
             >
-              <ListItemText primary={category.name} />
+              <ListItemText>
+                <span style={{ fontWeight: "400" }}>{category.name}</span>
+              </ListItemText>
               <ListItemSecondaryAction>
                 <IconButton size="small" edge="end" aria-label="comments">
                   {category.quantity}

@@ -195,19 +195,21 @@ const LinkInsta = () => {
       <div
         style={{
           textAlign: "center",
+          padding: "0 0 10% 0",
         }}
       >
         <Button
           variant="contained"
           color="primary"
           style={{
+            fontSize: "1rem",
             borderRadius: "17px 17px",
             width: "80%",
+            height: "auto",
           }}
         >
           <IconButton
             size="small"
-            edge="end"
             aria-label="comments"
             className={classes.icon}
             style={{ marginRight: "1%" }}

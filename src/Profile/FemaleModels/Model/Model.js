@@ -17,6 +17,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import InstagramIcon from "@material-ui/icons/Instagram";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import { withStyles } from "@material-ui/core/styles";
+import Api from "../../../Services/ApiClient";
 import {
   createMuiTheme,
   makeStyles,
@@ -25,27 +27,15 @@ import {
 import { ListItemSecondaryAction } from "@material-ui/core";
 import { useHistory, useParams } from "react-router-dom";
 import UserServices from "../../../Services/UserServices";
-const theme = createMuiTheme({
-  overrides: {
-    MuiPaper: {
-      root: {
-        width: "100%",
-        maxWidth: "unset!important",
-        left: "0!important",
-      },
-    },
-    MuiFormControlLabel: {
-      root: {
-        marginRight: "unset",
-      },
-    },
-  },
-});
 
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
     flexGrow: 1,
   },
+  toolRoot: {
+    padding: 0,
+  },
+
   dividerColor: {
     backgroundColor: "#F8F8F8",
   },
@@ -135,6 +125,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const BlueRadio = withStyles({
+  root: {
+    "&$checked": {
+      color: "#007AFF",
+    },
+  },
+  checked: {},
+})((props) => <Radio color="default" {...props} />);
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiTypography: {
+      body1: {
+        fontWeight: "700",
+      },
+      body2: {
+        fontSize: "0.68rem",
+        fontWeight: "600",
+      },
+    },
+  },
+  typography: {
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      "Roboto",
+      "Ubuntu",
+      "sans-serif",
+    ].join(","),
+  },
+});
+
 const Model = () => {
   const ModelData = {
     id: 1,
@@ -142,13 +164,14 @@ const Model = () => {
     lastname: "Brister",
     country: "Paris",
     image: "https://i.picsum.photos/id/342/200/300.jpg",
-    instagram: "5k",
-    stats: "Height 5'10.5''/179 cm",
-    agencies: "IMG Paris (MA)",
+    social: "5k",
+    heightinch: "5'10.5''",
+    heightcm: "180",
+    motheragency: "IMG Paris (MA)",
     occupation: "Model(since 2008) | Actress",
     birth: "17/02/2001 (18), Toronto, Canada",
     language: "English French Swedish",
-    Bio:
+    bio:
       "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum  lorem ipsum lorem ipsum lorem ipsum",
   };
 
@@ -182,285 +205,293 @@ const Model = () => {
   return (
     <div>
       <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
-        <MuiThemeProvider theme={theme}>
-          <AppBar position="static" className={classes.appBar}>
-            <Toolbar>
-              <div>
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={() => history.goBack()}
-                  style={{ color: "#007AFF" }}
-                >
-                  <ArrowBackIosIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                ></Menu>
-              </div>
-              <Typography variant="h6" className={classes.title}>
-                <ListItem className={classes.title}>
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar className={classes.toolRoot}>
+            <div>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={() => history.goBack()}
+                style={{ color: "#007AFF" }}
+              >
+                <ArrowBackIosIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              ></Menu>
+            </div>
+            <Typography variant="h6" className={classes.title}>
+              <ListItem className={classes.title}>
+                <MuiThemeProvider theme={theme}>
                   <ListItemText
                     primary={model.firstname + " " + model.lastname}
                     secondary={"lives in" + " " + model.country}
                   />
-                </ListItem>
-              </Typography>
+                </MuiThemeProvider>
+              </ListItem>
+            </Typography>
 
-              <Button
-                onClick={() => nextPath("/linkinsta")}
-                style={{ color: "#007AFF" }}
-              >
-                Edit
-              </Button>
-            </Toolbar>
-          </AppBar>
+            <Button
+              onClick={() => nextPath("/linkinsta")}
+              style={{ color: "#007AFF" }}
+            >
+              Edit
+            </Button>
+          </Toolbar>
+        </AppBar>
 
+        <List
+          component="nav"
+          className={classes.root}
+          aria-label="mailbox folders"
+        >
+          <div className={classes.row}>
+            <ListItem>
+              <ListItemText primary="Portfolio" />
+
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  aria-controls="simple-menu"
+                  onClick={handleClick}
+                >
+                  <KeyboardArrowDownIcon
+                    fontSize="small"
+                    style={{ paddingLeft: "0.2em" }}
+                  />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          </div>
+        </List>
+
+        <Menu
+          onClose={handleClose}
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          //onClose={handleClose}
+          elevation={0}
+          getContentAnchorEl={null}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+        >
+          <MenuItem>
+            <ListItemText primary="Most instagram followers" />
+
+            <ListItemSecondaryAction>
+              <FormControlLabel
+                control={
+                  <RadioGroup
+                    aria-label="gportfolio"
+                    name="portfolios"
+                    value={value}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value="fportfolios"
+                      control={<BlueRadio />}
+                    />
+                  </RadioGroup>
+                }
+              />
+            </ListItemSecondaryAction>
+          </MenuItem>
+
+          <MenuItem>
+            <ListItemText primary="Runaway model" />
+
+            <ListItemSecondaryAction>
+              <FormControlLabel
+                control={
+                  <RadioGroup
+                    aria-label="polaroid"
+                    name="polaroids"
+                    value={value}
+                    onChange={handleChange}
+                    color="primary"
+                  >
+                    <FormControlLabel
+                      value="polaroids"
+                      control={<BlueRadio />}
+                    />
+                  </RadioGroup>
+                }
+              />
+            </ListItemSecondaryAction>
+          </MenuItem>
+          <MenuItem>
+            <ListItemText primary="Photoshoot model" />
+
+            <ListItemSecondaryAction>
+              <FormControlLabel
+                control={
+                  <RadioGroup
+                    aria-label="video"
+                    name="videos"
+                    value={value}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel value="videos" control={<BlueRadio />} />
+                  </RadioGroup>
+                }
+              />
+            </ListItemSecondaryAction>
+          </MenuItem>
+          <MenuItem>
+            <ListItemText primary="Newest job" />
+
+            <ListItemSecondaryAction>
+              <FormControlLabel
+                control={
+                  <RadioGroup
+                    aria-label="cover"
+                    name="covers"
+                    value={value}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel value="covers" control={<BlueRadio />} />
+                  </RadioGroup>
+                }
+              />
+            </ListItemSecondaryAction>
+          </MenuItem>
+        </Menu>
+        <div style={{ backgroundColor: "#F8F8F8" }}>
           <List
             component="nav"
             className={classes.root}
             aria-label="mailbox folders"
           >
             <div className={classes.row}>
-              <ListItem>
-                <ListItemText primary="Portfolio" />
+              <img
+                style={{ width: "100%", height: "auto" }}
+                src={Api.defaults.baseURL + "/" + model.image}
+              />
+              <ListItem button onClick={() => nextPath("/socials")}>
+                <ListItemText primary="Socials" />
 
                 <ListItemSecondaryAction>
                   <IconButton
+                    className={classes.icon}
                     size="small"
                     edge="end"
                     aria-label="comments"
-                    aria-controls="simple-menu"
-                    onClick={handleClick}
+                    onClick={() => nextPath("/socials")}
                   >
-                    <KeyboardArrowDownIcon
+                    {model.social}
+                    <InstagramIcon style={{ paddingLeft: "0.2em" }} />
+                    <ArrowForwardIosIcon
                       fontSize="small"
                       style={{ paddingLeft: "0.2em" }}
                     />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
+              <Divider className={classes.dividerColor} />
+            </div>
+            <div className={classes.row}>
+              <ListItem button onClick={() => nextPath("/stats")}>
+                <ListItemText primary="Stats" />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    size="small"
+                    className={classes.icon}
+                    edge="end"
+                    aria-label="comments"
+                    onClick={() => nextPath("/stats")}
+                  >
+                    height{" "}
+                    {" " + model.heightinch + "/" + model.heightcm + "cm"}
+                    <ArrowForwardIosIcon
+                      fontSize="small"
+                      style={{ paddingLeft: "0.2em" }}
+                    />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <Divider className={classes.dividerColor} />
+            </div>
+            <div className={classes.row}>
+              <ListItem
+                button
+                onClick={() => nextPath("/agencies/" + model.id)}
+              >
+                <ListItemText primary="Agencies" />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    onClick={() => nextPath("/agencies/" + model.id)}
+                    size="small"
+                    className={classes.icon}
+                    edge="end"
+                    aria-label="comments"
+                  >
+                    {model.motheragency + "(MA)"}
+                    <ArrowForwardIosIcon
+                      fontSize="small"
+                      style={{ paddingLeft: "0.2em" }}
+                    />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <Divider />
+            </div>
+
+            <div className={classes.row}>
+              <ListItem button>
+                <ListItemText
+                  primary="Occupation"
+                  secondary={model.occupation}
+                />
+              </ListItem>
+              <Divider className={classes.dividerColor} />
+            </div>
+            <div className={classes.row}>
+              <ListItem button>
+                <ListItemText
+                  primary="Place and date of birth"
+                  secondary={model.birth}
+                />
+              </ListItem>
+              <Divider className={classes.dividerColor} />
+            </div>
+            <div className={classes.row}>
+              <ListItem button>
+                <ListItemText
+                  primary="Spoken languages"
+                  secondary={model.language}
+                />
+              </ListItem>
+              <Divider className={classes.dividerColor} />
+            </div>
+            <div className={classes.row}>
+              <ListItem button>
+                <ListItemText primary="Bio" secondary={model.bio} />
+              </ListItem>
+              <Divider className={classes.dividerColor} />
             </div>
           </List>
-
-          <Menu
-            onClose={handleClose}
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            //onClose={handleClose}
-            elevation={0}
-            getContentAnchorEl={null}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-          >
-            <MenuItem>
-              <ListItemText primary="Most instagram followers" />
-
-              <ListItemSecondaryAction>
-                <FormControlLabel
-                  control={
-                    <RadioGroup
-                      aria-label="gportfolio"
-                      name="portfolios"
-                      value={value}
-                      onChange={handleChange}
-                    >
-                      <FormControlLabel
-                        value="fportfolios"
-                        control={<Radio />}
-                      />
-                    </RadioGroup>
-                  }
-                />
-              </ListItemSecondaryAction>
-            </MenuItem>
-
-            <MenuItem>
-              <ListItemText primary="Runaway model" />
-
-              <ListItemSecondaryAction>
-                <FormControlLabel
-                  control={
-                    <RadioGroup
-                      aria-label="polaroid"
-                      name="polaroids"
-                      value={value}
-                      onChange={handleChange}
-                    >
-                      <FormControlLabel value="polaroids" control={<Radio />} />
-                    </RadioGroup>
-                  }
-                />
-              </ListItemSecondaryAction>
-            </MenuItem>
-            <MenuItem>
-              <ListItemText primary="Photoshoot model" />
-
-              <ListItemSecondaryAction>
-                <FormControlLabel
-                  control={
-                    <RadioGroup
-                      aria-label="video"
-                      name="videos"
-                      value={value}
-                      onChange={handleChange}
-                    >
-                      <FormControlLabel value="videos" control={<Radio />} />
-                    </RadioGroup>
-                  }
-                />
-              </ListItemSecondaryAction>
-            </MenuItem>
-            <MenuItem>
-              <ListItemText primary="Newest job" />
-
-              <ListItemSecondaryAction>
-                <FormControlLabel
-                  control={
-                    <RadioGroup
-                      aria-label="cover"
-                      name="covers"
-                      value={value}
-                      onChange={handleChange}
-                    >
-                      <FormControlLabel value="covers" control={<Radio />} />
-                    </RadioGroup>
-                  }
-                />
-              </ListItemSecondaryAction>
-            </MenuItem>
-          </Menu>
-          <div style={{ backgroundColor: "#F8F8F8" }}>
-            <List
-              component="nav"
-              className={classes.root}
-              aria-label="mailbox folders"
-            >
-              <div className={classes.row}>
-                <img
-                  style={{ width: "100%", height: "auto" }}
-                  src={model.image}
-                />
-                <ListItem button onClick={() => nextPath("/socials")}>
-                  <ListItemText primary="Socials" />
-
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      className={classes.icon}
-                      size="small"
-                      edge="end"
-                      aria-label="comments"
-                      onClick={() => nextPath("/socials")}
-                    >
-                      {model.instagram}
-                      <InstagramIcon style={{ paddingLeft: "0.2em" }} />
-                      <ArrowForwardIosIcon
-                        fontSize="small"
-                        style={{ paddingLeft: "0.2em" }}
-                      />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <Divider className={classes.dividerColor} />
-              </div>
-              <div className={classes.row}>
-                <ListItem button onClick={() => nextPath("/stats")}>
-                  <ListItemText primary="Stats" />
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      size="small"
-                      className={classes.icon}
-                      edge="end"
-                      aria-label="comments"
-                      onClick={() => nextPath("/stats")}
-                    >
-                      {model.stats}
-                      <ArrowForwardIosIcon
-                        fontSize="small"
-                        style={{ paddingLeft: "0.2em" }}
-                      />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <Divider className={classes.dividerColor} />
-              </div>
-              <div className={classes.row}>
-                <ListItem button onClick={() => nextPath("/agencies")}>
-                  <ListItemText primary="Agencies" />
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      onClick={() => nextPath("/agencies")}
-                      size="small"
-                      className={classes.icon}
-                      edge="end"
-                      aria-label="comments"
-                    >
-                      {model.agencies}
-                      <ArrowForwardIosIcon
-                        fontSize="small"
-                        style={{ paddingLeft: "0.2em" }}
-                      />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <Divider />
-              </div>
-
-              <div className={classes.row}>
-                <ListItem button>
-                  <ListItemText
-                    primary="Occupation"
-                    secondary={model.occupation}
-                  />
-                </ListItem>
-                <Divider className={classes.dividerColor} />
-              </div>
-              <div className={classes.row}>
-                <ListItem button>
-                  <ListItemText
-                    primary="Place and date of birth"
-                    secondary={model.birth}
-                  />
-                </ListItem>
-                <Divider className={classes.dividerColor} />
-              </div>
-              <div className={classes.row}>
-                <ListItem button>
-                  <ListItemText
-                    primary="Spoken languages"
-                    secondary={model.language}
-                  />
-                </ListItem>
-                <Divider className={classes.dividerColor} />
-              </div>
-              <div className={classes.row}>
-                <ListItem button>
-                  <ListItemText primary="Bio" secondary={model.Bio} />
-                </ListItem>
-                <Divider className={classes.dividerColor} />
-              </div>
-            </List>
-          </div>
-        </MuiThemeProvider>
+        </div>
       </div>
     </div>
   );

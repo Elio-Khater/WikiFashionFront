@@ -19,23 +19,6 @@ import {
 import { ListItemSecondaryAction } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
-const theme = createMuiTheme({
-  overrides: {
-    MuiPaper: {
-      root: {
-        width: "100%",
-        maxWidth: "unset!important",
-        left: "0!important",
-      },
-    },
-    MuiFormControlLabel: {
-      root: {
-        marginRight: "unset",
-      },
-    },
-  },
-});
-
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
     flexGrow: 1,
@@ -172,69 +155,67 @@ const Socials = () => {
   return (
     <div className={classes.bggrey}>
       <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
-        <MuiThemeProvider theme={theme}>
-          <AppBar position="static" className={classes.appBar}>
-            <Toolbar className={classes.toolRoot}>
-              <div style={{ position: "absolute", zIndex: 99999 }}>
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={() => nextPath("/Model")}
-                  style={{ color: "#007AFF" }}
-                >
-                  <ArrowBackIosIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                ></Menu>
-              </div>
-              <Typography variant="h6" className={classes.title}>
-                Socials
-              </Typography>
-            </Toolbar>
-          </AppBar>
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar className={classes.toolRoot}>
+            <div style={{ position: "absolute", zIndex: 99999 }}>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={() => nextPath("/Model")}
+                style={{ color: "#007AFF" }}
+              >
+                <ArrowBackIosIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              ></Menu>
+            </div>
+            <Typography variant="h6" className={classes.title}>
+              Socials
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-          <List
-            component="nav"
-            className={classes.root}
-            aria-label="mailbox folders"
-          >
-            {socials.map((social) => (
-              <div className={classes.row}>
-                <ListItem>
-                  <ListItemText primary={social.name} />
+        <List
+          component="nav"
+          className={classes.root}
+          aria-label="mailbox folders"
+        >
+          {socials.map((social) => (
+            <div className={classes.row}>
+              <ListItem>
+                <ListItemText primary={social.name} />
 
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      size="small"
-                      edge="end"
-                      aria-label="comments"
-                      className={classes.icon}
-                    >
-                      {social.quantity === 0 ? "-" : social.quantity}
-                      <ArrowForwardIosIcon
-                        fontSize="small"
-                        style={{ paddingLeft: "0.2em" }}
-                      />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <Divider className={classes.dividerColor} />
-              </div>
-            ))}
-          </List>
-        </MuiThemeProvider>
+                <ListItemSecondaryAction>
+                  <IconButton
+                    size="small"
+                    edge="end"
+                    aria-label="comments"
+                    className={classes.icon}
+                  >
+                    {social.quantity === 0 ? "-" : social.quantity}
+                    <ArrowForwardIosIcon
+                      fontSize="small"
+                      style={{ paddingLeft: "0.2em" }}
+                    />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <Divider className={classes.dividerColor} />
+            </div>
+          ))}
+        </List>
       </div>
     </div>
   );

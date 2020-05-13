@@ -18,23 +18,6 @@ import {
 import { ListItemSecondaryAction } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
-const theme = createMuiTheme({
-  overrides: {
-    MuiPaper: {
-      root: {
-        width: "100%",
-        maxWidth: "unset!important",
-        left: "0!important",
-      },
-    },
-    MuiFormControlLabel: {
-      root: {
-        marginRight: "unset",
-      },
-    },
-  },
-});
-
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
     flexGrow: 1,
@@ -177,182 +160,178 @@ const Stats = () => {
   return (
     <div className={classes.bggrey}>
       <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
-        <MuiThemeProvider theme={theme}>
-          <AppBar position="static" className={classes.appBar}>
-            <Toolbar className={classes.toolRoot}>
-              <div style={{ position: "absolute", zIndex: 99999 }}>
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar className={classes.toolRoot}>
+            <div style={{ position: "absolute", zIndex: 99999 }}>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={() => nextPath("/Model")}
+                style={{ color: "#007AFF" }}
+              >
+                <ArrowBackIosIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              ></Menu>
+            </div>
+            <Typography variant="h6" className={classes.title}>
+              Stats
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        <List
+          component="nav"
+          className={classes.root}
+          aria-label="mailbox folders"
+        >
+          <div className={classes.row}>
+            <ListItem>
+              <ListItemText primary="height" />
+
+              <ListItemSecondaryAction>
                 <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={() => nextPath("/Model")}
-                  style={{ color: "#007AFF" }}
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
                 >
-                  <ArrowBackIosIcon />
+                  {stat.heightinch}
+                  <FiberManualRecordIcon
+                    style={{ padding: "0 3em", fontSize: "0.5rem" }}
+                  />
+                  {stat.heightcm}
                 </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                ></Menu>
-              </div>
-              <Typography variant="h6" className={classes.title}>
-                Stats
-              </Typography>
-            </Toolbar>
-          </AppBar>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem>
+              <ListItemText primary="Chest" />
 
-          <List
-            component="nav"
-            className={classes.root}
-            aria-label="mailbox folders"
-          >
-            <div className={classes.row}>
-              <ListItem>
-                <ListItemText primary="height" />
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  {stat.chestinch}
+                  <FiberManualRecordIcon
+                    style={{ padding: "0 3em", fontSize: "0.5rem" }}
+                  />
+                  {stat.chestcm}
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem>
+              <ListItemText primary="Waist" />
 
-                <ListItemSecondaryAction>
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    aria-label="comments"
-                    className={classes.icon}
-                  >
-                    {stat.heightinch}
-                    <FiberManualRecordIcon
-                      style={{ padding: "0 3em", fontSize: "0.5rem" }}
-                    />
-                    {stat.heightcm}
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider className={classes.dividerColor} />
-            </div>
-            <div className={classes.row}>
-              <ListItem>
-                <ListItemText primary="Chest" />
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  {stat.waistinch}
+                  <FiberManualRecordIcon
+                    style={{ padding: "0 3em", fontSize: "0.5rem" }}
+                  />
+                  {stat.waistcm}
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem>
+              <ListItemText primary="Hips" />
 
-                <ListItemSecondaryAction>
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    aria-label="comments"
-                    className={classes.icon}
-                  >
-                    {stat.chestinch}
-                    <FiberManualRecordIcon
-                      style={{ padding: "0 3em", fontSize: "0.5rem" }}
-                    />
-                    {stat.chestcm}
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider className={classes.dividerColor} />
-            </div>
-            <div className={classes.row}>
-              <ListItem>
-                <ListItemText primary="Waist" />
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  {stat.hipsinch}
+                  <FiberManualRecordIcon
+                    style={{ padding: "0 3em", fontSize: "0.5rem" }}
+                  />
+                  {stat.hipscm}
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem>
+              <ListItemText primary="hair" />
 
-                <ListItemSecondaryAction>
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    aria-label="comments"
-                    className={classes.icon}
-                  >
-                    {stat.waistinch}
-                    <FiberManualRecordIcon
-                      style={{ padding: "0 3em", fontSize: "0.5rem" }}
-                    />
-                    {stat.waistcm}
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider className={classes.dividerColor} />
-            </div>
-            <div className={classes.row}>
-              <ListItem>
-                <ListItemText primary="Hips" />
+              <ListItemSecondaryAction>
+                <IconButton size="small" edge="end" aria-label="comments">
+                  {stat.hair}
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem>
+              <ListItemText primary="Eyes" />
 
-                <ListItemSecondaryAction>
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    aria-label="comments"
-                    className={classes.icon}
-                  >
-                    {stat.hipsinch}
-                    <FiberManualRecordIcon
-                      style={{ padding: "0 3em", fontSize: "0.5rem" }}
-                    />
-                    {stat.hipscm}
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider className={classes.dividerColor} />
-            </div>
-            <div className={classes.row}>
-              <ListItem>
-                <ListItemText primary="hair" />
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  {stat.eyes}
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem>
+              <ListItemText primary="Shoes" />
 
-                <ListItemSecondaryAction>
-                  <IconButton size="small" edge="end" aria-label="comments">
-                    {" "}
-                    className={classes.icon}
-                    {stat.hair}
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider className={classes.dividerColor} />
-            </div>
-            <div className={classes.row}>
-              <ListItem>
-                <ListItemText primary="Eyes" />
-
-                <ListItemSecondaryAction>
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    aria-label="comments"
-                    className={classes.icon}
-                  >
-                    {stat.eyes}
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider className={classes.dividerColor} />
-            </div>
-            <div className={classes.row}>
-              <ListItem>
-                <ListItemText primary="Shoes" />
-
-                <ListItemSecondaryAction>
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    aria-label="comments"
-                    className={classes.icon}
-                  >
-                    {stat.shoeam}
-                    <FiberManualRecordIcon
-                      style={{ padding: "0 3em", fontSize: "0.5rem" }}
-                    />
-                    {stat.shoeeu}
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider className={classes.dividerColor} />
-            </div>
-          </List>
-        </MuiThemeProvider>
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  {stat.shoeam}
+                  <FiberManualRecordIcon
+                    style={{ padding: "0 3em", fontSize: "0.5rem" }}
+                  />
+                  {stat.shoeeu}
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider className={classes.dividerColor} />
+          </div>
+        </List>
       </div>
     </div>
   );

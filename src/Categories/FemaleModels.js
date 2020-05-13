@@ -25,6 +25,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import Api from "../Services/ApiClient";
+
 import {
   createMuiTheme,
   makeStyles,
@@ -33,23 +35,6 @@ import {
 import { ListItemSecondaryAction } from "@material-ui/core";
 import { useHistory, useParams } from "react-router-dom";
 import CategoryServices from "../Services/CategoryServices";
-
-const theme = createMuiTheme({
-  overrides: {
-    MuiPaper: {
-      root: {
-        width: "100%",
-        maxWidth: "unset!important",
-        left: "0!important",
-      },
-    },
-    MuiFormControlLabel: {
-      root: {
-        marginRight: "unset",
-      },
-    },
-  },
-});
 
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
@@ -62,13 +47,20 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     backgroundColor: theme.palette.background.paper,
   },
+  toolRoot: {
+    padding: 0,
+  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
+    top: "20%",
+    width: "100%",
     flexGrow: 1,
+    zIndex: 0,
     textAlign: "center",
     color: theme.palette.text.primary,
+    // fontFamily: "SFPRO",
   },
   search: {
     position: "relative",
@@ -115,13 +107,13 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   bgtab: {
-    backgroundColor: "#F0F0F0",
-    borderRadius: "17px 17px",
+    backgroundColor: "#EEEEEF",
+    borderRadius: "10px 10px",
     margin: "0 5%",
     minHeight: "15px",
   },
   tab: {
-    borderRadius: "17px 17px",
+    borderRadius: "10px 10px",
     textTransform: "unset",
     minHeight: "15px",
   },
@@ -136,6 +128,9 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(6),
     height: theme.spacing(6),
   },
+  dividerColor: {
+    backgroundColor: "#F8F8F8",
+  },
 }));
 
 const FemaleModels = () => {
@@ -147,55 +142,46 @@ const FemaleModels = () => {
       id: 1,
       firstname: "Anastasia",
       lastname: "Brister",
-      image: "https://i.picsum.photos/id/469/200/300.jpg",
     },
     {
       id: 2,
       firstname: "Sophie",
       lastname: "Asveld",
-      image: "https://i.picsum.photos/id/329/200/300.jpg",
     },
     {
       id: 3,
       firstname: "Emily",
       lastname: "Ratajkowski",
-      image: "https://i.picsum.photos/id/342/200/300.jpg",
     },
     {
       id: 4,
       firstname: "Anastasia",
       lastname: "Brister",
-      image: "https://i.picsum.photos/id/469/200/300.jpg",
     },
     {
       id: 5,
       firstname: "Sophie",
       lastname: "Asveld",
-      image: "https://i.picsum.photos/id/329/200/300.jpg",
     },
     {
       id: 6,
       firstname: "Emily",
       lastname: "Ratajkowski",
-      image: "https://i.picsum.photos/id/342/200/300.jpg",
     },
     {
       id: 7,
       firstname: "Anastasia",
       lastname: "Brister",
-      image: "https://i.picsum.photos/id/469/200/300.jpg",
     },
     {
       id: 8,
       firstname: "Sophie",
       lastname: "Asveld",
-      image: "https://i.picsum.photos/id/329/200/300.jpg",
     },
     {
       id: 9,
       firstname: "Emily",
       lastname: "Ratajkowski",
-      image: "https://i.picsum.photos/id/342/200/300.jpg",
     },
   ];
 
@@ -351,213 +337,261 @@ const FemaleModels = () => {
   return (
     <div>
       <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
-        <MuiThemeProvider theme={theme}>
-          <AppBar position="static" className={classes.appBar}>
-            <Toolbar>
-              <div>
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={() => nextPath("/")}
-                  style={{ color: "#007AFF" }}
-                >
-                  <ArrowBackIosIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                ></Menu>
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar className={classes.toolRoot}>
+            <div>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={() => nextPath("/")}
+                style={{ color: "#007AFF" }}
+              >
+                <ArrowBackIosIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              ></Menu>
+            </div>
+            <Typography variant="h6" className={classes.title}>
+              {name}
+            </Typography>
+            <Button style={{ color: "#007AFF", paddingRight: "16px" }}>
+              Filters
+            </Button>
+          </Toolbar>
+          <Toolbar>
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
               </div>
-              <Typography variant="h6" className={classes.title}>
-                {name}
-              </Typography>
-              <Button style={{ color: "#007AFF" }}>Filters</Button>
-            </Toolbar>
-            <Toolbar>
-              <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
 
-                <InputBase
-                  placeholder="Search…"
-                  onChange={handleSearch}
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                  value={search}
-                  inputProps={{ "aria-label": "search" }}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-controls="simple-menu"
-                        onClick={handleClick}
-                        aria-label="account of current user"
-                        aria-haspopup="true"
-                      >
-                        <TuneIcon />
-                      </IconButton>
-                    </InputAdornment>
+              <InputBase
+                placeholder="Search"
+                onChange={handleSearch}
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                value={search}
+                inputProps={{ "aria-label": "search" }}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-controls="simple-menu"
+                      onClick={handleClick}
+                      aria-label="account of current user"
+                      aria-haspopup="true"
+                    >
+                      <TuneIcon
+                        style={Boolean(anchorEl) ? { color: "#007AFF" } : {}}
+                      />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </div>
+          </Toolbar>
+
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+            elevation={0}
+            getContentAnchorEl={null}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <MenuItem>
+              <ListItemText
+                style={
+                  filterArray.includes("MostInstagramFollowers")
+                    ? { color: "#007AFF" }
+                    : {}
+                }
+                primary="Most instagram followers"
+              />
+
+              <ListItemSecondaryAction>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      icon={<RadioButtonUncheckedIcon />}
+                      checkedIcon={
+                        <CheckCircleIcon style={{ color: "#007AFF" }} />
+                      }
+                      onChange={handleChangeCheckBox}
+                      name="MostInstagramFollowers"
+                    />
                   }
                 />
-              </div>
-            </Toolbar>
+              </ListItemSecondaryAction>
+            </MenuItem>
 
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-              elevation={0}
-              getContentAnchorEl={null}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "center",
-              }}
-            >
-              <MenuItem>
-                <ListItemText primary="Most instagram followers" />
+            <MenuItem>
+              <ListItemText
+                style={
+                  filterArray.includes("RunawayModel")
+                    ? { color: "#007AFF" }
+                    : {}
+                }
+                primary="Runaway model"
+              />
 
-                <ListItemSecondaryAction>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        icon={<RadioButtonUncheckedIcon />}
-                        checkedIcon={<CheckCircleIcon color="primary" />}
-                        onChange={handleChangeCheckBox}
-                        name="MostInstagramFollowers"
-                      />
-                    }
-                  />
-                </ListItemSecondaryAction>
-              </MenuItem>
-
-              <MenuItem>
-                <ListItemText primary="Runaway model" />
-
-                <ListItemSecondaryAction>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        icon={<RadioButtonUncheckedIcon />}
-                        checkedIcon={<CheckCircleIcon color="primary" />}
-                        name="RunawayModel"
-                        onChange={handleChangeCheckBox}
-                      />
-                    }
-                  />
-                </ListItemSecondaryAction>
-              </MenuItem>
-              <MenuItem>
-                <ListItemText primary="Photoshoot model" />
-
-                <ListItemSecondaryAction>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        icon={<RadioButtonUncheckedIcon />}
-                        checkedIcon={<CheckCircleIcon color="primary" />}
-                        name="PhotoshootModel"
-                        onChange={handleChangeCheckBox}
-                      />
-                    }
-                  />
-                </ListItemSecondaryAction>
-              </MenuItem>
-              <MenuItem>
-                <ListItemText primary="Newest job" />
-
-                <ListItemSecondaryAction>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        icon={<RadioButtonUncheckedIcon />}
-                        checkedIcon={<CheckCircleIcon color="primary" />}
-                        name="NewestJob"
-                        onChange={handleChangeCheckBox}
-                      />
-                    }
-                  />
-                </ListItemSecondaryAction>
-              </MenuItem>
-            </Menu>
-            <Paper style={{ boxShadow: "unset" }} square>
-              <Tabs
-                className={classes.bgtab}
-                value={value}
-                indicatorColor="unset"
-                textColor="primary"
-                variant="fullWidth"
-                onChange={handleChange}
-                aria-label="disabled tabs example"
-              >
-                <Tab className={classes.tab} label="All" />
-                <Tab className={classes.tab} label="Top" />
-                <Tab className={classes.tab} label="New Face" />
-              </Tabs>
-            </Paper>
-          </AppBar>
-        </MuiThemeProvider>
-      </div>
-
-      <List
-        component="nav"
-        className={classes.root}
-        aria-label="mailbox folders"
-      >
-        <p
-          style={{
-            marginLeft: "4%",
-            color: "grey",
-            textTransform: "uppercase",
-            fontSize: "12px",
-          }}
-        >
-          {FemaleModels.length} models
-        </p>
-        {FemaleModels.map((FemaleModel) => {
-          let letter = FemaleModel.firstname.charAt(0);
-          if (letters.includes(letter)) {
-            letter = "";
-          } else {
-            letters.push(letter);
-          }
-          return (
-            <div className={classes.row} key={FemaleModel.id}>
-              <ListItem
-                button
-                onClick={() => nextPath("/Model/" + FemaleModel.id)}
-              >
-                <div style={{ width: "8%", color: "grey" }}>{letter}</div>
-                <ListItemAvatar>
-                  <Avatar className={classes.pic} src={FemaleModel.image} />
-                </ListItemAvatar>
-                <ListItemText
-                  style={{ marginLeft: "2%" }}
-                  primary={FemaleModel.firstname + " " + FemaleModel.lastname}
+              <ListItemSecondaryAction>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      icon={<RadioButtonUncheckedIcon />}
+                      checkedIcon={
+                        <CheckCircleIcon style={{ color: "#007AFF" }} />
+                      }
+                      onChange={handleChangeCheckBox}
+                      name="RunawayModel"
+                    />
+                  }
                 />
-              </ListItem>
-              <Divider light />
-            </div>
-          );
-        })}
-      </List>
+              </ListItemSecondaryAction>
+            </MenuItem>
+
+            <MenuItem>
+              <ListItemText
+                style={
+                  filterArray.includes("PhotoshootModel")
+                    ? { color: "#007AFF" }
+                    : {}
+                }
+                primary="Photoshoot model"
+              />
+
+              <ListItemSecondaryAction>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      icon={<RadioButtonUncheckedIcon />}
+                      checkedIcon={
+                        <CheckCircleIcon style={{ color: "#007AFF" }} />
+                      }
+                      name="PhotoshootModel"
+                      onChange={handleChangeCheckBox}
+                    />
+                  }
+                />
+              </ListItemSecondaryAction>
+            </MenuItem>
+            <MenuItem>
+              <ListItemText
+                style={
+                  filterArray.includes("NewestJob") ? { color: "#007AFF" } : {}
+                }
+                primary="Newest job"
+              />
+
+              <ListItemSecondaryAction>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      icon={<RadioButtonUncheckedIcon />}
+                      checkedIcon={
+                        <CheckCircleIcon style={{ color: "#007AFF" }} />
+                      }
+                      name="NewestJob"
+                      onChange={handleChangeCheckBox}
+                    />
+                  }
+                />
+              </ListItemSecondaryAction>
+            </MenuItem>
+          </Menu>
+          <Paper style={{ boxShadow: "unset" }} square>
+            <Tabs
+              className={classes.bgtab}
+              value={value}
+              indicatorColor="unset"
+              textColor="primary"
+              variant="fullWidth"
+              onChange={handleChange}
+              aria-label="disabled tabs example"
+            >
+              <Tab className={classes.tab} label="All" />
+              <Tab className={classes.tab} label="Top" />
+              <Tab className={classes.tab} label="New Face" />
+            </Tabs>
+          </Paper>
+        </AppBar>
+        <List
+          component="nav"
+          className={classes.root}
+          aria-label="mailbox folders"
+        >
+          <p
+            style={{
+              marginLeft: "4%",
+              color: "#BABABA",
+              textTransform: "uppercase",
+              fontSize: "11px",
+              fontFamily: [
+                "-apple-system",
+                "BlinkMacSystemFont",
+                "Roboto",
+                "Ubuntu",
+                "sans-serif",
+              ].join(","),
+            }}
+          >
+            {FemaleModels.length} models
+          </p>
+          {FemaleModels.map((FemaleModel) => {
+            let letter = FemaleModel.firstname.charAt(0);
+            if (letters.includes(letter)) {
+              letter = "";
+            } else {
+              letters.push(letter);
+            }
+            return (
+              <div className={classes.row} key={FemaleModel.id}>
+                <ListItem
+                  button
+                  onClick={() => nextPath("/Model/" + FemaleModel.id)}
+                >
+                  <div style={{ width: "8%", color: "grey" }}>{letter}</div>
+                  <ListItemAvatar>
+                    <Avatar
+                      className={classes.pic}
+                      src={Api.defaults.baseURL + "/" + FemaleModel.image}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText style={{ marginLeft: "2%" }}>
+                    <span style={{ fontWeight: "400" }}>
+                      {FemaleModel.firstname + " "}
+                    </span>
+                    <b>{FemaleModel.lastname}</b>
+                  </ListItemText>
+                </ListItem>
+                <Divider className={classes.dividerColor} />
+              </div>
+            );
+          })}
+        </List>
+      </div>
     </div>
   );
 };

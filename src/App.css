@@ -6,3 +6,7 @@
   background-color: white;
   border: 3px solid #f0f0f0;
 }
+.MuiTab-textColorPrimary.Mui-selected {
+  color: black !important;
+  font-weight: 700 !important;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -16,24 +16,8 @@ import {
   MuiThemeProvider,
 } from "@material-ui/core/styles";
 import { ListItemSecondaryAction } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
-
-const theme = createMuiTheme({
-  overrides: {
-    MuiPaper: {
-      root: {
-        width: "100%",
-        maxWidth: "unset!important",
-        left: "0!important",
-      },
-    },
-    MuiFormControlLabel: {
-      root: {
-        marginRight: "unset",
-      },
-    },
-  },
-});
+import { useHistory, useParams } from "react-router-dom";
+import UserServices from "../../../Services/UserServices";
 
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
@@ -147,6 +131,8 @@ const Agencies = () => {
     { id: 4, name: "IMG Israel", isMotheragency: 0 },
     { id: 5, name: "Women Berlin", isMotheragency: 0 },
   ];
+  let { id } = useParams();
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -163,73 +149,78 @@ const Agencies = () => {
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();
-  const [agencies] = useState(AgenciesData);
+  const [agencies, setAgencies] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      const result = await UserServices.GetAgenciesById(id);
+      setAgencies(result.data);
+    }
+    fetchData();
+  }, []);
   return (
     <div className={classes.bggrey}>
-      <MuiThemeProvider theme={theme}>
-        <AppBar position="static" className={classes.appBar}>
-          <Toolbar className={classes.toolRoot}>
-            <div style={{ position: "absolute", zIndex: 99999 }}>
-              <IconButton
-                onClick={() => nextPath("/Model")}
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                style={{ color: "#007AFF" }}
-              >
-                <ArrowBackIosIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-              ></Menu>
-            </div>
-            <Typography variant="h6" className={classes.title}>
-              Agencies
-            </Typography>
-          </Toolbar>
-        </AppBar>
+      <AppBar position="static" className={classes.appBar}>
+        <Toolbar className={classes.toolRoot}>
+          <div style={{ position: "absolute", zIndex: 99999 }}>
+            <IconButton
+              onClick={() => nextPath("/Model")}
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              style={{ color: "#007AFF" }}
+            >
+              <ArrowBackIosIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+            ></Menu>
+          </div>
+          <Typography variant="h6" className={classes.title}>
+            Agencies
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
-        <List
-          component="nav"
-          className={classes.root}
-          aria-label="mailbox folders"
-        >
-          {agencies.map((agency) => (
-            <div className={classes.row}>
-              <ListItem button>
-                <ListItemText primary={agency.name} />
+      <List
+        component="nav"
+        className={classes.root}
+        aria-label="mailbox folders"
+      >
+        {agencies.map((agency) => (
+          <div className={classes.row}>
+            <ListItem button>
+              <ListItemText primary={agency.name} />
 
-                <ListItemSecondaryAction>
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    aria-label="comments"
-                    className={classes.icon}
-                  >
-                    {agency.isMotheragency === 1 && "Mother Agency"}
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  {agency.isMotheragency === 1 && "Mother Agency"}
 
-                    <ArrowForwardIosIcon
-                      fontSize="small"
-                      style={{ paddingLeft: "0.2em" }}
-                    />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider className={classes.dividerColor} />
-            </div>
-          ))}
-        </List>
-      </MuiThemeProvider>
+                  <ArrowForwardIosIcon
+                    fontSize="small"
+                    style={{ paddingLeft: "0.2em" }}
+                  />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider className={classes.dividerColor} />
+          </div>
+        ))}
+      </List>
     </div>
   );
 };
