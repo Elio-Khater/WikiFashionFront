@@ -4,7 +4,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Menu from "@material-ui/core/Menu";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Button from "@material-ui/core/Button";
@@ -38,14 +38,17 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    position: "absolute",
-    top: "12%",
     width: "100%",
     flexGrow: 1,
     zIndex: 0,
     textAlign: "center",
-    color: theme.palette.text.primary,
+    color: "black",
+    fontWeight: "600",
+    position: "absolute",
+    letterSpacing: "0",
+    top: "15%",
   },
+  offset: theme.mixins.toolbar,
   search: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
@@ -143,40 +146,27 @@ const LinkInsta = () => {
 
   return (
     <div className={classes.bggrey} style={{ borderBottom: 0, height: "100%" }}>
-      <AppBar position="static" className={classes.appBar}>
+      <AppBar position="fixed" className={classes.appBar}>
         <Toolbar className={classes.toolRoot}>
-          <div style={{ position: "absolute", zIndex: 99999 }}>
+          <div>
             <IconButton
+              onClick={() => history.goBack()}
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              onClick={() => nextPath("/Model")}
               style={{ color: "#007AFF" }}
             >
-              <ArrowBackIosIcon />
+              <ArrowBackIosRoundedIcon
+                style={{ fontSize: "1.8rem", zIndex: "2000" }}
+              />
             </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-            ></Menu>
           </div>
           <Typography variant="h6" className={classes.title}>
-            <ListItem className={classes.title}>
-              <ListItemText primary="Edit Profile" />
-            </ListItem>
+            Edit Profile
           </Typography>
         </Toolbar>
       </AppBar>
-
+      <div className={classes.offset} />
       <img
         style={{
           width: "100%",

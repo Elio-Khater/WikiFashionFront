@@ -4,8 +4,15 @@ const CategoryServices = {
   getCategories: async () => {
     return await Api.get("api/categories");
   },
-  getUsersByCategory: async (id) => {
-    return await Api.get("api/categories/" + id + "/users");
+  getUsersByCategory: async (id, filters, section) => {
+    return await Api.get(
+      "api/categories/" +
+        id +
+        "/users?filters=" +
+        filters +
+        "&section=" +
+        section
+    );
   },
 };
 

@@ -8,7 +8,14 @@
 html,
 body,
 #root {
+  background-color: #f4f4f4;
   height: 100%;
+  letter-spacing: 1px;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 0px; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
 }
 
 body {

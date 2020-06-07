@@ -4,12 +4,11 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Menu from "@material-ui/core/Menu";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import Button from "@material-ui/core/Button";
-import { fade } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
-import TuneIcon from "@material-ui/icons/Tune";
+import TuneRoundedIcon from "@material-ui/icons/TuneRounded";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
@@ -24,28 +23,34 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import Api from "../Services/ApiClient";
+import { ListItemSecondaryAction, Grow, Slide } from "@material-ui/core";
 
 import {
   createMuiTheme,
   makeStyles,
   MuiThemeProvider,
 } from "@material-ui/core/styles";
-import { ListItemSecondaryAction } from "@material-ui/core";
+
 import { useHistory, useParams } from "react-router-dom";
 import CategoryServices from "../Services/CategoryServices";
 
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
     flexGrow: 1,
+    height: "100%",
   },
+  offset: theme.mixins.toolbar,
+
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+    height: "100%",
   },
   appBar: {
     backgroundColor: theme.palette.background.paper,
+    paddingBottom: "12px",
   },
   toolRoot: {
     padding: 0,
@@ -54,12 +59,15 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    top: "20%",
+    marginLeft: "7%",
     width: "100%",
     flexGrow: 1,
     zIndex: 0,
     textAlign: "center",
-    color: theme.palette.text.primary,
+    color: "black",
+    fontWeight: "600",
+    marginTop: "1.9%",
+    letterSpacing: "0",
     // fontFamily: "SFPRO",
   },
   search: {
@@ -67,10 +75,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
     backgroundColor: "#F0F0F0",
     "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      //backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     //marginRight: theme.spacing(2),
     marginLeft: 0,
+
     width: "100%",
     [theme.breakpoints.up("sm")]: {
       //marginLeft: theme.spacing(3),
@@ -79,14 +88,14 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px 10px",
   },
   searchIcon: {
-    padding: theme.spacing(0, 2),
+    padding: theme.spacing(0, 1),
     height: "100%",
     position: "absolute",
     pointerEvents: "none",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "gray",
+    color: "#A3A3A3",
   },
   TuneIcon: {
     padding: theme.spacing(0, 2),
@@ -96,26 +105,28 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "gray",
+    color: "#A3A3A3",
   },
   inputRoot: { flexGrow: 1, width: "100%" },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    paddingLeft: `calc(1em + ${theme.spacing(2)}px)`,
     transition: theme.transitions.create("width"),
     width: "100%",
+    fontSize: "1.1rem",
   },
   bgtab: {
     backgroundColor: "#EEEEEF",
     borderRadius: "10px 10px",
-    margin: "0 5%",
+    margin: "1px 4.5% 0px 4.5%",
     minHeight: "15px",
   },
   tab: {
     borderRadius: "10px 10px",
     textTransform: "unset",
     minHeight: "15px",
+    fontSize: "0.9rem",
   },
   menu: {
     width: "100%",
@@ -125,203 +136,151 @@ const useStyles = makeStyles((theme) => ({
   row: {},
 
   pic: {
-    width: theme.spacing(6),
-    height: theme.spacing(6),
+    width: theme.spacing(5),
+    height: theme.spacing(5),
   },
   dividerColor: {
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#f7f7f7",
+    height: "1.5px",
+    margin: "2% 0 2% 0",
   },
 }));
+
+const themeList = createMuiTheme({
+  overrides: {
+    MuiListItem: {
+      root: {
+        paddingTop: "4px",
+        paddingBottom: "4px",
+      },
+    },
+
+    MuiListItemText: {
+      root: {
+        marginLeft: "4%",
+      },
+    },
+    MuiTypography: {
+      body1: {
+        fontSize: "0.9rem",
+      },
+    },
+  },
+  typography: {
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      "Roboto",
+      "Ubuntu",
+      "sans-serif",
+    ].join(","),
+  },
+});
+
+const themeMenu = createMuiTheme({
+  overrides: {
+    MuiListItemSecondaryAction: {
+      root: {
+        right: "1.4%",
+      },
+    },
+    MuiFormControlLabel: {
+      root: {
+        marginRight: "13px",
+      },
+    },
+
+    MuiListItemText: {
+      root: {
+        marginLeft: "3.5%",
+      },
+    },
+    MuiPaper: {
+      rounded: {
+        borderRadius: "10px",
+      },
+    },
+    MuiTypography: {
+      body1: {
+        fontWeight: "600",
+        letterSpacing: "0",
+        fontSize: "1.1rem",
+      },
+    },
+    MuiMenuItem: {
+      root: {
+        paddingTop: 0,
+        paddingBottom: 0,
+        minHeight: "50px",
+      },
+    },
+    MuiListItemAvatar: {
+      root: {
+        minWidth: "46px",
+      },
+    },
+  },
+  typography: {
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      "Roboto",
+      "Ubuntu",
+      "sans-serif",
+    ].join(","),
+  },
+});
 
 const FemaleModels = () => {
   const history = useHistory();
   let { id, name } = useParams();
-
-  const ModelsData = [
-    {
-      id: 1,
-      firstname: "Anastasia",
-      lastname: "Brister",
-    },
-    {
-      id: 2,
-      firstname: "Sophie",
-      lastname: "Asveld",
-    },
-    {
-      id: 3,
-      firstname: "Emily",
-      lastname: "Ratajkowski",
-    },
-    {
-      id: 4,
-      firstname: "Anastasia",
-      lastname: "Brister",
-    },
-    {
-      id: 5,
-      firstname: "Sophie",
-      lastname: "Asveld",
-    },
-    {
-      id: 6,
-      firstname: "Emily",
-      lastname: "Ratajkowski",
-    },
-    {
-      id: 7,
-      firstname: "Anastasia",
-      lastname: "Brister",
-    },
-    {
-      id: 8,
-      firstname: "Sophie",
-      lastname: "Asveld",
-    },
-    {
-      id: 9,
-      firstname: "Emily",
-      lastname: "Ratajkowski",
-    },
-  ];
-
   const [search, setSearch] = useState("");
   const [filterArray, setFilterArray] = useState([]);
+  const [SearchedModels, setSearchedModels] = useState([]);
   const [FemaleModels, setFemaleModels] = useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [value, setValue] = React.useState(0);
   useEffect(() => {
     async function fetchData() {
-      const result = await CategoryServices.getUsersByCategory(id);
+      const result = await CategoryServices.getUsersByCategory(
+        id,
+        filterArray,
+        value
+      );
       setFemaleModels(result.data);
+      setSearchedModels(result.data);
     }
-    fetchData();
-  }, []);
+    if (search === "") {
+      fetchData();
+    }
+  }, [filterArray, value, search]);
 
   const classes = useStyles();
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    if (anchorEl) {
+      setAnchorEl(null);
+    } else {
+      document.getElementsByTagName("html")[0].style.overflowY = "hidden";
+      setAnchorEl(event.currentTarget);
+    }
   };
   const nextPath = (path) => {
     history.push(path);
   };
   const handleClose = () => {
     setAnchorEl(null);
-    let response;
-    if (filterArray.length === 0) {
-      //call api all
-      response = [
-        {
-          id: 1,
-          firstname: "Anastasia",
-          lastname: "Brister",
-          image: "https://i.picsum.photos/id/469/200/300.jpg",
-        },
-        {
-          id: 2,
-          firstname: "Sophie",
-          lastname: "Asveld",
-          image: "https://i.picsum.photos/id/329/200/300.jpg",
-        },
-        {
-          id: 3,
-          firstname: "Emily",
-          lastname: "Ratajkowski",
-          image: "https://i.picsum.photos/id/342/200/300.jpg",
-        },
-      ];
-    } else {
-      //call api with filterArray
-      response = [
-        {
-          id: 1,
-          firstname: "Anastasia",
-          lastname: "Brister",
-          image: "https://i.picsum.photos/id/469/200/300.jpg",
-        },
-      ];
-    }
-    setFemaleModels(response);
   };
-
   const handleSearch = (event) => {
     setSearch(event.target.value);
-    setFemaleModels(ModelsData);
-    let searchArray = ModelsData.filter((x) =>
-      x.name.toLowerCase().includes(event.target.value.toLowerCase())
+    let searchArray = SearchedModels.filter(
+      (x) =>
+        x.firstname.toLowerCase().includes(event.target.value.toLowerCase()) ||
+        x.lastname.toLowerCase().includes(event.target.value.toLowerCase())
     );
     setFemaleModels(searchArray);
   };
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    let response;
-    switch (newValue) {
-      case 0:
-        //call api that gives all models
-        response = [
-          {
-            id: 1,
-            firstname: "Anastasia",
-            lastname: "Brister",
-            image: "https://i.picsum.photos/id/469/200/300.jpg",
-          },
-          {
-            id: 2,
-            name: "Sophie",
-            firstname: "Asveld",
-            image: "https://i.picsum.photos/id/329/200/300.jpg",
-          },
-          {
-            id: 3,
-            name: "Emily",
-            firstname: "Ratajkowski",
-            image: "https://i.picsum.photos/id/342/200/300.jpg",
-          },
-        ];
-        break;
-      case 1:
-        //call api that gives top models
-        response = [
-          {
-            id: 1,
-            firstname: "Lisa",
-            lastname: "Patricia",
-            image: "https://i.picsum.photos/id/969/200/300.jpg",
-          },
-          {
-            id: 2,
-            firstname: "Nour",
-            lastname: "Ahley",
-            image: "https://i.picsum.photos/id/129/200/300.jpg",
-          },
-          {
-            id: 3,
-            firstname: "Hanna",
-            lastname: "Montanna",
-            image: "https://i.picsum.photos/id/312/200/300.jpg",
-          },
-        ];
-        break;
-      case 2:
-        //call api that gives new models
-        response = [
-          {
-            id: 1,
-            firstname: "Anastasia",
-            lastname: "Brister",
-            image: "https://i.picsum.photos/id/469/200/300.jpg",
-          },
-          {
-            id: 2,
-            firstname: "Hanna",
-            lastname: "Montanna",
-            image: "https://i.picsum.photos/id/312/200/300.jpg",
-          },
-        ];
-        break;
-    }
-
-    setFemaleModels(response);
   };
 
   const handleChangeCheckBox = (event) => {
@@ -335,91 +294,103 @@ const FemaleModels = () => {
 
   let letters = [];
   return (
-    <div>
-      <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
-        <AppBar position="static" className={classes.appBar}>
-          <Toolbar className={classes.toolRoot}>
-            <div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={() => nextPath("/")}
-                style={{ color: "#007AFF" }}
-              >
-                <ArrowBackIosIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-              ></Menu>
-            </div>
-            <Typography variant="h6" className={classes.title}>
-              {name}
-            </Typography>
-            <Button style={{ color: "#007AFF", paddingRight: "16px" }}>
-              Filters
-            </Button>
-          </Toolbar>
-          <Toolbar>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
+    <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
+      {/* <img
+        src="/Archive/Wiki Fashion 02.png"
+        style={{
+          width: "100%",
+          position: "absolute",
+          zIndex: "800000",
+          opacity: "0.4",
+          top: "-39px",
+          display: "block",
+        }}
+      /> */}
 
-              <InputBase
-                placeholder="Search"
-                onChange={handleSearch}
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                value={search}
-                inputProps={{ "aria-label": "search" }}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-controls="simple-menu"
-                      onClick={handleClick}
-                      aria-label="account of current user"
-                      aria-haspopup="true"
-                    >
-                      <TuneIcon
-                        style={Boolean(anchorEl) ? { color: "#007AFF" } : {}}
-                      />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </div>
-          </Toolbar>
-
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-            elevation={0}
-            getContentAnchorEl={null}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
+      <AppBar position="fixed" className={classes.appBar}>
+        <Toolbar className={classes.toolRoot}>
+          <div>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={() => history.goBack()}
+              size="large"
+              style={{ color: "#1F89FF", marginTop: "4%" }}
+            >
+              <ArrowBackIosRoundedIcon style={{ fontSize: "1.8rem" }} />
+            </IconButton>
+          </div>
+          <Typography variant="h6" className={classes.title}>
+            {name}
+          </Typography>
+          <Button
+            onClick={() => nextPath("/filters")}
+            style={{
+              color: "#1F89FF",
+              paddingRight: "16px",
+              paddingLeft: "9px",
+              fontSize: "1.1rem",
+              fontWeight: "700",
+              marginRight: "10px",
             }}
           >
+            Filters
+          </Button>
+        </Toolbar>
+        <Toolbar style={{ marginTop: "3%" }}>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+
+            <InputBase
+              placeholder="Search"
+              onChange={handleSearch}
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              value={search}
+              inputProps={{ "aria-label": "search" }}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-controls="simple-menu"
+                    onClick={handleClick}
+                    aria-label="account of current user"
+                    aria-haspopup="true"
+                  >
+                    <TuneRoundedIcon
+                      style={Boolean(anchorEl) ? { color: "#007AFF" } : {}}
+                    />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </div>
+        </Toolbar>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          elevation={0}
+          getContentAnchorEl={null}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          TransitionComponent={Slide}
+          transitionDuration={900}
+          style={{ zIndex: "900" }}
+        >
+          <MuiThemeProvider theme={themeMenu}>
             <MenuItem>
               <ListItemText
                 style={
@@ -434,9 +405,13 @@ const FemaleModels = () => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      icon={<RadioButtonUncheckedIcon />}
+                      icon={
+                        <RadioButtonUncheckedIcon
+                          style={{ color: "#A3A3A3", opacity: "0.5" }}
+                        />
+                      }
                       checkedIcon={
-                        <CheckCircleIcon style={{ color: "#007AFF" }} />
+                        <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
                       }
                       onChange={handleChangeCheckBox}
                       name="MostInstagramFollowers"
@@ -460,9 +435,13 @@ const FemaleModels = () => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      icon={<RadioButtonUncheckedIcon />}
+                      icon={
+                        <RadioButtonUncheckedIcon
+                          style={{ color: "#A3A3A3", opacity: "0.5" }}
+                        />
+                      }
                       checkedIcon={
-                        <CheckCircleIcon style={{ color: "#007AFF" }} />
+                        <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
                       }
                       onChange={handleChangeCheckBox}
                       name="RunawayModel"
@@ -486,9 +465,13 @@ const FemaleModels = () => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      icon={<RadioButtonUncheckedIcon />}
+                      icon={
+                        <RadioButtonUncheckedIcon
+                          style={{ color: "#A3A3A3", opacity: "0.5" }}
+                        />
+                      }
                       checkedIcon={
-                        <CheckCircleIcon style={{ color: "#007AFF" }} />
+                        <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
                       }
                       name="PhotoshootModel"
                       onChange={handleChangeCheckBox}
@@ -509,9 +492,13 @@ const FemaleModels = () => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      icon={<RadioButtonUncheckedIcon />}
+                      icon={
+                        <RadioButtonUncheckedIcon
+                          style={{ color: "#A3A3A3", opacity: "0.5" }}
+                        />
+                      }
                       checkedIcon={
-                        <CheckCircleIcon style={{ color: "#007AFF" }} />
+                        <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
                       }
                       name="NewestJob"
                       onChange={handleChangeCheckBox}
@@ -520,34 +507,82 @@ const FemaleModels = () => {
                 />
               </ListItemSecondaryAction>
             </MenuItem>
-          </Menu>
-          <Paper style={{ boxShadow: "unset" }} square>
-            <Tabs
-              className={classes.bgtab}
-              value={value}
-              indicatorColor="unset"
-              textColor="primary"
-              variant="fullWidth"
-              onChange={handleChange}
-              aria-label="disabled tabs example"
-            >
-              <Tab className={classes.tab} label="All" />
-              <Tab className={classes.tab} label="Top" />
-              <Tab className={classes.tab} label="New Face" />
-            </Tabs>
-          </Paper>
-        </AppBar>
-        <List
-          component="nav"
-          className={classes.root}
-          aria-label="mailbox folders"
+          </MuiThemeProvider>
+        </Menu>
+      </AppBar>
+      <div className={classes.offset} />
+      <div style={{ minHeight: "40px" }} />
+
+      <List
+        component="nav"
+        className={classes.root}
+        aria-label="mailbox folders"
+      >
+        <Paper
+          style={{
+            boxShadow: "unset",
+            paddingBottom: "2%",
+            marginTop: "3.5%",
+          }}
+          square
         >
+          <Tabs
+            className={classes.bgtab}
+            value={value}
+            indicatorColor="unset"
+            textColor="primary"
+            variant="fullWidth"
+            onChange={handleChange}
+            aria-label="disabled tabs example"
+          >
+            <Tab
+              className={classes.tab}
+              style={{ paddingLeft: "2px" }}
+              label="All"
+              value={0}
+            />
+
+            <Divider
+              orientation="vertical"
+              style={
+                value === 0 || value === 1
+                  ? { display: "none" }
+                  : { height: "2.5vh", transform: "translateY(0.5vh)" }
+              }
+            />
+
+            <Tab
+              className={classes.tab}
+              style={{ paddingRight: "4px", paddingTop: "2px" }}
+              label="Top"
+              value={1}
+            />
+
+            <Divider
+              orientation="vertical"
+              style={
+                value === 2 || value === 1
+                  ? { display: "none" }
+                  : { height: "2.5vh", transform: "translateY(0.5vh)" }
+              }
+            />
+            <Tab
+              className={classes.tab}
+              style={{ paddingRight: "4px", paddingTop: "2px" }}
+              label="New Face"
+              value={2}
+            />
+          </Tabs>
+        </Paper>
+
+        <MuiThemeProvider theme={themeList}>
           <p
             style={{
               marginLeft: "4%",
-              color: "#BABABA",
+              color: "#A3A3A3",
               textTransform: "uppercase",
-              fontSize: "11px",
+              fontSize: "10px",
+              fontWeight: "600",
               fontFamily: [
                 "-apple-system",
                 "BlinkMacSystemFont",
@@ -559,7 +594,7 @@ const FemaleModels = () => {
           >
             {FemaleModels.length} models
           </p>
-          {FemaleModels.map((FemaleModel) => {
+          {FemaleModels.map((FemaleModel, index) => {
             let letter = FemaleModel.firstname.charAt(0);
             if (letters.includes(letter)) {
               letter = "";
@@ -572,15 +607,29 @@ const FemaleModels = () => {
                   button
                   onClick={() => nextPath("/Model/" + FemaleModel.id)}
                 >
-                  <div style={{ width: "8%", color: "grey" }}>{letter}</div>
+                  <div
+                    style={{
+                      width: "8%",
+                      color: "grey",
+                      fontFamily: [
+                        "-apple-system",
+                        "BlinkMacSystemFont",
+                        "Roboto",
+                        "Ubuntu",
+                        "sans-serif",
+                      ].join(","),
+                    }}
+                  >
+                    {letter}
+                  </div>
                   <ListItemAvatar>
                     <Avatar
                       className={classes.pic}
-                      src={Api.defaults.baseURL + "/" + FemaleModel.image}
+                      src={Api.defaults.baseURL + "/" + FemaleModel.image[0]}
                     />
                   </ListItemAvatar>
-                  <ListItemText style={{ marginLeft: "2%" }}>
-                    <span style={{ fontWeight: "400" }}>
+                  <ListItemText style={{ marginLeft: 0 }}>
+                    <span style={{ letterSpacing: "0" }}>
                       {FemaleModel.firstname + " "}
                     </span>
                     <b>{FemaleModel.lastname}</b>
@@ -590,8 +639,19 @@ const FemaleModels = () => {
               </div>
             );
           })}
-        </List>
-      </div>
+        </MuiThemeProvider>
+      </List>
+      {Boolean(anchorEl) && (
+        <div
+          style={{
+            backgroundColor: "rgba(0,0,0,0.5)",
+            height: "1000px",
+            position: "absolute",
+            top: "0",
+            width: "100%",
+          }}
+        ></div>
+      )}
     </div>
   );
 };

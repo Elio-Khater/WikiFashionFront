@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Menu from "@material-ui/core/Menu";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -16,7 +16,43 @@ import {
   MuiThemeProvider,
 } from "@material-ui/core/styles";
 import { ListItemSecondaryAction } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import UserServices from "../../../Services/UserServices";
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiTypography: {
+      body1: {
+        fontSize: "1.05rem",
+        letterSpacing: 0,
+      },
+    },
+    MuiIconButton: {
+      sizeSmall: {
+        fontSize: "1rem",
+      },
+      root: {
+        color: "#A3A3A3",
+        fontWeight: "300",
+      },
+    },
+    MuiListItem: {
+      root: {
+        paddingTop: "2px",
+        paddingBottom: "2px",
+      },
+    },
+  },
+  typography: {
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      "Roboto",
+      "Ubuntu",
+      "sans-serif",
+    ].join(","),
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
@@ -30,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     padding: 0,
-    marginTop: "3%",
+    marginTop: "1%",
   },
   appBar: {
     backgroundColor: theme.palette.background.paper,
@@ -39,13 +75,15 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    position: "absolute",
-    top: "20%",
     width: "100%",
     flexGrow: 1,
     zIndex: 0,
     textAlign: "center",
-    color: theme.palette.text.primary,
+    color: "black",
+    fontWeight: "600",
+    position: "absolute",
+    letterSpacing: "0",
+    top: "15%",
   },
   search: {
     position: "relative",
@@ -87,6 +125,9 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create("width"),
     width: "100%",
   },
+  statspace: {
+    padding: "8px 0",
+  },
   bgtab: {
     backgroundColor: "#F0F0F0",
 
@@ -107,6 +148,8 @@ const useStyles = makeStyles((theme) => ({
   row: {
     paddingLeft: 0,
     paddingRight: 0,
+    paddingTop: "0px",
+    paddingBottom: "0px",
   },
 
   pic: {
@@ -114,13 +157,14 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(6),
   },
   bggrey: {
-    backgroundColor: "#f8f8f8",
+    //backgroundColor: "#f8f8f8",
     height: "100%",
   },
 
   dividerColor: {
     backgroundColor: "#F8F8F8",
   },
+  offset: theme.mixins.toolbar,
 }));
 
 const Stats = () => {
@@ -155,51 +199,50 @@ const Stats = () => {
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();
-  const [stat] = useState(StatData);
+  let { id } = useParams();
+  const [stat, setStat] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      const result = await UserServices.getUserById(id);
+      console.log(result.data);
+      setStat(result.data);
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className={classes.bggrey}>
-      <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
-        <AppBar position="static" className={classes.appBar}>
-          <Toolbar className={classes.toolRoot}>
-            <div style={{ position: "absolute", zIndex: 99999 }}>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={() => nextPath("/Model")}
-                style={{ color: "#007AFF" }}
-              >
-                <ArrowBackIosIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-              ></Menu>
-            </div>
-            <Typography variant="h6" className={classes.title}>
-              Stats
-            </Typography>
-          </Toolbar>
-        </AppBar>
+      <AppBar position="fixed" className={classes.appBar}>
+        <Toolbar className={classes.toolRoot}>
+          <div>
+            <IconButton
+              onClick={() => history.goBack()}
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              style={{ color: "#007AFF" }}
+            >
+              <ArrowBackIosRoundedIcon
+                style={{ fontSize: "1.8rem", zIndex: "2000" }}
+              />
+            </IconButton>
+          </div>
+          <Typography variant="h6" className={classes.title}>
+            Stats
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <div className={classes.offset} />
 
-        <List
-          component="nav"
-          className={classes.root}
-          aria-label="mailbox folders"
-        >
+      <List
+        component="nav"
+        className={classes.root}
+        aria-label="mailbox folders"
+      >
+        <MuiThemeProvider theme={theme}>
           <div className={classes.row}>
             <ListItem>
-              <ListItemText primary="height" />
+              <ListItemText primary="Height" className={classes.statspace} />
 
               <ListItemSecondaryAction>
                 <IconButton
@@ -212,7 +255,7 @@ const Stats = () => {
                   <FiberManualRecordIcon
                     style={{ padding: "0 3em", fontSize: "0.5rem" }}
                   />
-                  {stat.heightcm}
+                  {stat.heightcm + "cm"}
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>
@@ -220,7 +263,7 @@ const Stats = () => {
           </div>
           <div className={classes.row}>
             <ListItem>
-              <ListItemText primary="Chest" />
+              <ListItemText primary="Chest" className={classes.statspace} />
 
               <ListItemSecondaryAction>
                 <IconButton
@@ -241,7 +284,7 @@ const Stats = () => {
           </div>
           <div className={classes.row}>
             <ListItem>
-              <ListItemText primary="Waist" />
+              <ListItemText primary="Waist" className={classes.statspace} />
 
               <ListItemSecondaryAction>
                 <IconButton
@@ -262,7 +305,7 @@ const Stats = () => {
           </div>
           <div className={classes.row}>
             <ListItem>
-              <ListItemText primary="Hips" />
+              <ListItemText primary="Hips" className={classes.statspace} />
 
               <ListItemSecondaryAction>
                 <IconButton
@@ -283,7 +326,7 @@ const Stats = () => {
           </div>
           <div className={classes.row}>
             <ListItem>
-              <ListItemText primary="hair" />
+              <ListItemText primary="hair" className={classes.statspace} />
 
               <ListItemSecondaryAction>
                 <IconButton size="small" edge="end" aria-label="comments">
@@ -295,7 +338,7 @@ const Stats = () => {
           </div>
           <div className={classes.row}>
             <ListItem>
-              <ListItemText primary="Eyes" />
+              <ListItemText primary="Eyes" className={classes.statspace} />
 
               <ListItemSecondaryAction>
                 <IconButton
@@ -312,7 +355,7 @@ const Stats = () => {
           </div>
           <div className={classes.row}>
             <ListItem>
-              <ListItemText primary="Shoes" />
+              <ListItemText primary="Shoes" className={classes.statspace} />
 
               <ListItemSecondaryAction>
                 <IconButton
@@ -329,10 +372,9 @@ const Stats = () => {
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>
-            <Divider className={classes.dividerColor} />
           </div>
-        </List>
-      </div>
+        </MuiThemeProvider>
+      </List>
     </div>
   );
 };

@@ -4,12 +4,12 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Menu from "@material-ui/core/Menu";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounded";
 import MinimizeIcon from "@material-ui/icons/Minimize";
 import {
   createMuiTheme,
@@ -19,10 +19,51 @@ import {
 import { ListItemSecondaryAction } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
+const theme = createMuiTheme({
+  overrides: {
+    MuiTypography: {
+      body1: {
+        fontWeight: "400",
+        lineHeight: "unset",
+        letterSpacing: 0,
+        fontSize: "1.05rem",
+      },
+    },
+    MuiListItem: {
+      root: {
+        paddingTop: "5px",
+        paddingBottom: "5px",
+      },
+    },
+    MuiIconButton: {
+      root: {
+        color: "#A3A3A3",
+      },
+      sizeSmall: {
+        fontSize: "1.05rem",
+        padding: "6px",
+      },
+    },
+    MuiSvgIcon: {
+      fontSizeSmall: {
+        fontSize: "1rem",
+      },
+    },
+  },
+  typography: {
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      "Roboto",
+      "Ubuntu",
+      "sans-serif",
+    ].join(","),
+  },
+});
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
     flexGrow: 1,
-    backgroundColor: "#F8F8F8",
+    //backgroundColor: "#F8F8F8",
   },
   toolRoot: {
     padding: 0,
@@ -31,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     padding: 0,
-    marginTop: "3%",
+    marginTop: "1%",
   },
   appBar: {
     backgroundColor: theme.palette.background.paper,
@@ -40,36 +81,15 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    position: "absolute",
-    top: "20%",
     width: "100%",
     flexGrow: 1,
     zIndex: 0,
     textAlign: "center",
-    color: theme.palette.text.primary,
-  },
-  search: {
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-
-    //marginRight: theme.spacing(2),
-    backgroundColor: theme.palette.background.paper,
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      //marginLeft: theme.spacing(3),
-      //width: "auto",
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: "100%",
+    color: "black",
+    fontWeight: "600",
     position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "gray",
+    letterSpacing: "0",
+    top: "15%",
   },
   TuneIcon: {
     padding: theme.spacing(0, 2),
@@ -89,12 +109,7 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create("width"),
     width: "100%",
   },
-  bgtab: {
-    backgroundColor: "#F0F0F0",
-    borderRadius: "17px 17px",
-    margin: "0 5%",
-    minHeight: "15px",
-  },
+
   tab: {
     borderRadius: "17px 17px",
     textTransform: "unset",
@@ -110,6 +125,8 @@ const useStyles = makeStyles((theme) => ({
   row: {
     paddingLeft: 0,
     paddingRight: 0,
+    paddingTop: "0px",
+    paddingBottom: "5px",
   },
 
   pic: {
@@ -117,12 +134,13 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(6),
   },
   bggrey: {
-    backgroundColor: "#f8f8f8",
+    //backgroundColor: "#f8f8f8",
     height: "100%",
   },
   dividerColor: {
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#f7f7f7",
   },
+  offset: theme.mixins.toolbar,
 }));
 
 const Socials = () => {
@@ -154,48 +172,39 @@ const Socials = () => {
 
   return (
     <div className={classes.bggrey}>
-      <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
-        <AppBar position="static" className={classes.appBar}>
-          <Toolbar className={classes.toolRoot}>
-            <div style={{ position: "absolute", zIndex: 99999 }}>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={() => nextPath("/Model")}
-                style={{ color: "#007AFF" }}
-              >
-                <ArrowBackIosIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-              ></Menu>
-            </div>
-            <Typography variant="h6" className={classes.title}>
-              Socials
-            </Typography>
-          </Toolbar>
-        </AppBar>
+      <AppBar position="fixed" className={classes.appBar}>
+        <Toolbar className={classes.toolRoot}>
+          <IconButton
+            onClick={() => history.goBack()}
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            style={{ color: "#007AFF" }}
+          >
+            <ArrowBackIosRoundedIcon
+              style={{ fontSize: "1.8rem", zIndex: "2000" }}
+            />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Socials
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <div className={classes.offset} />
 
-        <List
-          component="nav"
-          className={classes.root}
-          aria-label="mailbox folders"
-        >
-          {socials.map((social) => (
+      <List
+        component="nav"
+        className={classes.root}
+        aria-label="mailbox folders"
+      >
+        <MuiThemeProvider theme={theme}>
+          {socials.map((social, index) => (
             <div className={classes.row}>
               <ListItem>
-                <ListItemText primary={social.name} />
+                <ListItemText
+                  style={{ padding: "5px 0" }}
+                  primary={social.name}
+                />
 
                 <ListItemSecondaryAction>
                   <IconButton
@@ -205,18 +214,20 @@ const Socials = () => {
                     className={classes.icon}
                   >
                     {social.quantity === 0 ? "-" : social.quantity}
-                    <ArrowForwardIosIcon
+                    <ArrowForwardIosRoundedIcon
                       fontSize="small"
-                      style={{ paddingLeft: "0.2em" }}
+                      style={{ paddingLeft: "0.8em" }}
                     />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
-              <Divider className={classes.dividerColor} />
+              {index !== socials.length - 1 && (
+                <Divider className={classes.dividerColor} />
+              )}
             </div>
           ))}
-        </List>
-      </div>
+        </MuiThemeProvider>
+      </List>
     </div>
   );
 };

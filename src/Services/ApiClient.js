@@ -4,7 +4,8 @@ const instance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  baseURL: "https://wikifashionwebapi.azurewebsites.net/api",
+
+  baseURL: "https://wikifashionwebapi.azurewebsites.net",
   //baseURL: "https://localhost:44369",
 });
 

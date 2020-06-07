@@ -1,6 +1,8 @@
 import React from "react";
 import "./App.css";
 import FemaleModels from "./Categories/FemaleModels";
+import Filters from "./Categories/Filters";
+import Country from "./Categories/Country";
 import Model from "./Profile/FemaleModels/Model/Model";
 import Socials from "./Profile/FemaleModels/Model/Socials";
 import Stats from "./Profile/FemaleModels/Model/Stats";
@@ -8,15 +10,7 @@ import Agencies from "./Profile/FemaleModels/Model/Agencies";
 import LinkInsta from "./Profile/FemaleModels/Model/LinkInsta";
 import Home from "./Home/Home";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useParams,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 const theme = createMuiTheme({
   overrides: {
     MuiPaper: {
@@ -25,32 +19,116 @@ const theme = createMuiTheme({
         maxWidth: "unset!important",
         left: "0!important",
       },
+      elevation4: {
+        boxShadow: "unset",
+      },
+      rounded: {
+        borderRadius: "10px",
+      },
+    },
+    MuiToolbar: {
+      regular: {
+        minHeight: "unset",
+      },
     },
     MuiFormControlLabel: {
       root: {
         marginRight: "unset",
       },
+      root: {
+        marginRight: "14px",
+      },
+    },
+    MuiList: {
+      padding: {
+        paddingBottom: 0,
+      },
+    },
+
+    MuiListItemText: {
+      multiline: {
+        marginTop: "4px",
+        marginBottom: "4px",
+      },
+      root: {
+        marginTop: "-1px",
+      },
     },
     MuiTypography: {
       body1: {
-        fontWeight: "700",
+        fontWeight: "550",
+        fontSize: "1.05rem",
       },
       body2: {
         fontSize: "0.875rem",
-        fontWeight: "600",
+        fontWeight: "400",
+        lineHeight: "1.2",
+        color: "#2E2E2E",
+      },
+      colorTextSecondary: {
+        color: "#2E2E2E",
+      },
+      root: {
+        margin: "5px 0 0 0",
+      },
+      h6: {
+        fontSize: "1.1rem",
+      },
+    },
+    MuiSvgIcon: {
+      fontSizeSmall: {
+        fontSize: "1rem",
+      },
+      root: {
+        fontSize: "1.4rem",
+      },
+    },
+
+    MuiIconButton: {
+      sizeSmall: {
+        fontSize: "0.9rem",
+        opacity: "0.7",
+        color: "#878686",
+      },
+      root: {
+        paddingLeft: "10px!important",
+        fontSize: "1.4rem",
+        color: "#A3A3A3",
       },
     },
     MuiButton: {
       root: {
-        fontSize: "1.25rem",
-        fontWeight: "500",
+        fontSize: "1rem",
+        fontWeight: "400",
         lineHeight: 0,
         textTransform: "unset",
+        borderRadius: "unset",
+      },
+      text: {
+        padding: "15px 0px",
+        marginTop: "1.9%",
+        marginRight: "1%",
+        letterSpacing: "1px",
+      },
+      containedPrimary: {
+        backgroundColor: "#007AFF",
+      },
+    },
+
+    MuiListItem: {
+      root: {
+        paddingTop: "1px",
+        paddingBottom: "1px",
+      },
+      gutters: {
+        padding: "0 8px",
+        paddingLeft: "8px",
       },
     },
     MuiTab: {
       root: {
         padding: "unset",
+        fontSize: "0.775rem",
       },
       textColorPrimary: {
         color: "black",
@@ -66,6 +144,9 @@ const theme = createMuiTheme({
       "Ubuntu",
       "sans-serif",
     ].join(","),
+    h6: {
+      fontSize: "1.1rem",
+    },
   },
 });
 const App = () => {
@@ -75,6 +156,14 @@ const App = () => {
         <Switch>
           <Route path="/FemaleModels/:id/:name">
             <FemaleModels />
+          </Route>
+
+          <Route path="/filters">
+            <Filters />
+          </Route>
+
+          <Route path="/Country">
+            <Country />
           </Route>
 
           <Route path="/Model/:id">
@@ -89,7 +178,7 @@ const App = () => {
             <Agencies />
           </Route>
 
-          <Route path="/stats">
+          <Route path="/stats/:id">
             <Stats />
           </Route>
           <Route path="/linkinsta">

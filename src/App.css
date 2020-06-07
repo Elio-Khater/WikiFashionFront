@@ -1,10 +1,11 @@
 .App {
-  background-color: linen;
+  background-color: "#F4F4F4";
 }
 
 .MuiTab-textColorPrimary.Mui-selected {
   background-color: white;
-  border: 3px solid #f0f0f0;
+  border: 2.5px solid #f0f0f0;
+  font-weight: 600;
 }
 .MuiTab-textColorPrimary.Mui-selected {
   color: black !important;

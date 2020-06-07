@@ -5,7 +5,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounded";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -14,39 +14,79 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import Divider from "@material-ui/core/Divider";
 import { useHistory } from "react-router-dom";
 import CategoryServices from "../Services/CategoryServices";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    marginTop: "2%",
+    //marginTop: "2%",
+    height: "100%",
   },
-
+  offset: theme.mixins.toolbar,
   row: {
-    paddingTop: "5%",
-    paddingBottom: "5%",
+    // paddingTop: "2.5%",
+    //paddingBottom: "2.5%",
+    height: "51px",
   },
 
   dividerColor: {
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#f7f7f7",
+    height: "1.5px",
+    margin: "2% 0 2% 0",
   },
 
   rootAppBar: {
     flexGrow: 1,
-    backgroundColor: "#F8F8F8",
+    height: "100%",
+    backgroundColor: "#F4F4F4",
   },
   appBar: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "#f4f4f4",
   },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
+    marginLeft: "11%",
+    width: "100%",
     flexGrow: 1,
+    zIndex: 0,
     textAlign: "center",
-    color: theme.palette.text.primary,
+    color: "black",
+    fontWeight: "500",
+    marginTop: "1.8%",
+  },
+  toolRoot: {
+    padding: 0,
+    backgroundColor: theme.palette.background.paper,
+    marginBottom: "6px",
   },
 }));
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiSvgIcon: {
+      root: {
+        fill: "#A3A3A3",
+      },
+    },
+    MuiTypography: {
+      h6: {
+        fontSize: "1.1rem",
+      },
+    },
+  },
+  typography: {
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      "Roboto",
+      "Ubuntu",
+      "sans-serif",
+    ].join(","),
+  },
+});
 
 const Home = () => {
   //initial states
@@ -71,44 +111,37 @@ const Home = () => {
   };
   return (
     <div className={classes.rootAppBar}>
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Wiki.Fashion
-          </Typography>
+      <AppBar position="fixed" className={classes.appBar}>
+        <Toolbar className={classes.toolRoot}>
+          <MuiThemeProvider theme={theme}>
+            <Typography variant="h6" className={classes.title}>
+              Wiki.fashion
+            </Typography>
 
-          <div>
-            <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-            >
-              <NotificationsIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            ></Menu>
-          </div>
+            <div>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                style={{
+                  padding: "15px 15px 10px 0",
+                  color: "#a3a3a3",
+                }}
+              >
+                <NotificationsIcon />
+              </IconButton>
+            </div>
+          </MuiThemeProvider>
         </Toolbar>
       </AppBar>
-
+      <div className={classes.offset} />
       <List
         component="nav"
         className={classes.root}
         aria-label="mailbox folders"
       >
-        {categories.map((category) => (
-          <div key={category.id}>
+        {categories.map((category, index) => (
+          <span key={category.id}>
             <ListItem
               button
               className={classes.row}
@@ -117,12 +150,29 @@ const Home = () => {
               }
             >
               <ListItemText>
-                <span style={{ fontWeight: "400" }}>{category.name}</span>
+                <span
+                  style={{
+                    fontWeight: "400",
+                    marginLeft: "4%",
+                    letterSpacing: "0",
+                  }}
+                >
+                  {category.name}
+                </span>
               </ListItemText>
               <ListItemSecondaryAction>
-                <IconButton size="small" edge="end" aria-label="comments">
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  style={{
+                    marginRight: 0,
+                    fontWeight: 500,
+                    fontSize: "1rem",
+                  }}
+                >
                   {category.quantity}
-                  <ArrowForwardIosIcon
+                  <ArrowForwardIosRoundedIcon
                     fontSize="small"
                     style={{ paddingLeft: "0.2em" }}
                   />
@@ -130,7 +180,7 @@ const Home = () => {
               </ListItemSecondaryAction>
             </ListItem>
             <Divider className={classes.dividerColor} />
-          </div>
+          </span>
         ))}
       </List>
     </div>
