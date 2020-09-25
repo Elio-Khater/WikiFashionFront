@@ -2,6 +2,11 @@ import React from "react";
 import "./App.css";
 import FemaleModels from "./Categories/FemaleModels";
 import Filters from "./Categories/Filters";
+import Admin from "./UserForm";
+import Stepper from "./AddUser";
+import EditUser from "./EditUser";
+import Upload from "./Upload";
+import AddAgencies from "./AddAgencies";
 import Country from "./Categories/Country";
 import Model from "./Profile/FemaleModels/Model/Model";
 import Socials from "./Profile/FemaleModels/Model/Socials";
@@ -11,6 +16,7 @@ import LinkInsta from "./Profile/FemaleModels/Model/LinkInsta";
 import Home from "./Home/Home";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import AddUser from "./AddUser";
 const theme = createMuiTheme({
   overrides: {
     MuiPaper: {
@@ -23,7 +29,7 @@ const theme = createMuiTheme({
         boxShadow: "unset",
       },
       rounded: {
-        borderRadius: "10px",
+        borderRadius: "15px",
       },
     },
     MuiToolbar: {
@@ -32,9 +38,6 @@ const theme = createMuiTheme({
       },
     },
     MuiFormControlLabel: {
-      root: {
-        marginRight: "unset",
-      },
       root: {
         marginRight: "14px",
       },
@@ -123,6 +126,7 @@ const theme = createMuiTheme({
       gutters: {
         padding: "0 8px",
         paddingLeft: "8px",
+        paddingRight: 0,
       },
     },
     MuiTab: {
@@ -132,7 +136,7 @@ const theme = createMuiTheme({
       },
       textColorPrimary: {
         color: "black",
-        fontWeight: "400",
+        fontWeight: "500",
       },
     },
   },
@@ -157,8 +161,19 @@ const App = () => {
           <Route path="/FemaleModels/:id/:name">
             <FemaleModels />
           </Route>
-
-          <Route path="/filters">
+          <Route path="/admin/edituser">
+            <EditUser />
+          </Route>
+          <Route path="/admin/AddUser/:id?">
+            <AddUser />
+          </Route>
+          <Route path="/admin/upload">
+            <Upload />
+          </Route>
+          <Route path="/admin/addagencies">
+            <AddAgencies />
+          </Route>
+          <Route path="/filters/:id/:name">
             <Filters />
           </Route>
 
@@ -170,7 +185,7 @@ const App = () => {
             <Model />
           </Route>
 
-          <Route path="/socials">
+          <Route path="/socials/:id">
             <Socials />
           </Route>
 
@@ -181,7 +196,7 @@ const App = () => {
           <Route path="/stats/:id">
             <Stats />
           </Route>
-          <Route path="/linkinsta">
+          <Route path="/linkinsta/:id">
             <LinkInsta />
           </Route>
 

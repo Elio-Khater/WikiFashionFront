@@ -25,7 +25,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import Api from "../Services/ApiClient";
-import { ListItemSecondaryAction, Grow, Slide } from "@material-ui/core";
+import { ListItemSecondaryAction, Slide } from "@material-ui/core";
 
 import {
   createMuiTheme,
@@ -33,13 +33,13 @@ import {
   MuiThemeProvider,
 } from "@material-ui/core/styles";
 
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import CategoryServices from "../Services/CategoryServices";
 
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
     flexGrow: 1,
-    height: "100%",
+    // height: "100%",
   },
   offset: theme.mixins.toolbar,
 
@@ -72,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
   },
   search: {
     position: "relative",
-    borderRadius: theme.shape.borderRadius,
     backgroundColor: "#F0F0F0",
     "&:hover": {
       //backgroundColor: fade(theme.palette.common.white, 0.25),
@@ -115,6 +114,7 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create("width"),
     width: "100%",
     fontSize: "1.1rem",
+    fontWeight: "450",
   },
   bgtab: {
     backgroundColor: "#EEEEEF",
@@ -178,12 +178,21 @@ const themeList = createMuiTheme({
 });
 
 const themeMenu = createMuiTheme({
+  transitions: { create: () => "none" },
+
   overrides: {
     MuiListItemSecondaryAction: {
       root: {
         right: "1.4%",
       },
     },
+    MuiPopover: {
+      paper: {
+        position: "unset",
+        minHeight: "0",
+      },
+    },
+
     MuiFormControlLabel: {
       root: {
         marginRight: "13px",
@@ -196,8 +205,17 @@ const themeMenu = createMuiTheme({
       },
     },
     MuiPaper: {
+      root: {
+        width: "100%",
+        maxWidth: "unset!important",
+        left: "0!important",
+        top: 0,
+      },
+      elevation4: {
+        boxShadow: "unset",
+      },
       rounded: {
-        borderRadius: "10px",
+        borderRadius: "15px",
       },
     },
     MuiTypography: {
@@ -231,21 +249,29 @@ const themeMenu = createMuiTheme({
   },
 });
 
-const FemaleModels = () => {
+const FemaleModels = (props) => {
   const history = useHistory();
-  let { id, name } = useParams();
+  const location = useLocation();
+  let { id, name, state } = useParams();
   const [search, setSearch] = useState("");
   const [filterArray, setFilterArray] = useState([]);
   const [SearchedModels, setSearchedModels] = useState([]);
   const [FemaleModels, setFemaleModels] = useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [value, setValue] = React.useState(0);
+  const [inSearch, setInSearch] = React.useState(false);
+
   useEffect(() => {
     async function fetchData() {
+      document.getElementsByTagName("html")[0].style.backgroundColor = "white";
+      document.getElementsByTagName("body")[0].style.backgroundColor = "white";
+      document.getElementById("root").style.backgroundColor = "white";
+
       const result = await CategoryServices.getUsersByCategory(
         id,
         filterArray,
-        value
+        value,
+        location.state
       );
       setFemaleModels(result.data);
       setSearchedModels(result.data);
@@ -253,15 +279,40 @@ const FemaleModels = () => {
     if (search === "") {
       fetchData();
     }
+    return () => {
+      document.getElementsByTagName("html")[0].style.backgroundColor =
+        "#f4f4f4";
+      document.getElementsByTagName("body")[0].style.backgroundColor =
+        "#f4f4f4";
+      document.getElementById("root").style.backgroundColor = "#f4f4f4";
+    };
   }, [filterArray, value, search]);
 
   const classes = useStyles();
   const handleClick = (event) => {
     if (anchorEl) {
       setAnchorEl(null);
+      document.getElementById("filter-menu").style.height = "0px";
+      document.getElementById("fmodelDiv").style.opacity = "0";
+      document.getElementById("fmodelDiv").style.zIndex = "-1";
     } else {
       document.getElementsByTagName("html")[0].style.overflowY = "hidden";
+      document.getElementById("fmodelDiv").style.opacity = "0.5";
+      document.getElementById("fmodelDiv").style.zIndex = "900";
+      document.getElementById("filter-menu").style.height = "350px";
+
       setAnchorEl(event.currentTarget);
+    }
+  };
+  const handleClickSearch = (open, clear) => {
+    setInSearch(open);
+    if (open) {
+      document.getElementById("filter-menu").style.display = "none";
+    } else {
+      document.getElementById("filter-menu").style.display = "block";
+    }
+    if (clear) {
+      setSearch("");
     }
   };
   const nextPath = (path) => {
@@ -295,18 +346,6 @@ const FemaleModels = () => {
   let letters = [];
   return (
     <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
-      {/* <img
-        src="/Archive/Wiki Fashion 02.png"
-        style={{
-          width: "100%",
-          position: "absolute",
-          zIndex: "800000",
-          opacity: "0.4",
-          top: "-39px",
-          display: "block",
-        }}
-      /> */}
-
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar className={classes.toolRoot}>
           <div>
@@ -318,21 +357,22 @@ const FemaleModels = () => {
               size="large"
               style={{ color: "#1F89FF", marginTop: "4%" }}
             >
-              <ArrowBackIosRoundedIcon style={{ fontSize: "1.8rem" }} />
+              <ArrowBackIosRoundedIcon style={{ fontSize: "1.6rem" }} />
             </IconButton>
           </div>
           <Typography variant="h6" className={classes.title}>
             {name}
           </Typography>
           <Button
-            onClick={() => nextPath("/filters")}
+            onClick={() => nextPath("/filters/" + id + "/" + name)}
             style={{
               color: "#1F89FF",
               paddingRight: "16px",
               paddingLeft: "9px",
               fontSize: "1.1rem",
-              fontWeight: "700",
+              fontWeight: "600",
               marginRight: "10px",
+              letterSpacing: 0,
             }}
           >
             Filters
@@ -346,7 +386,7 @@ const FemaleModels = () => {
 
             <InputBase
               placeholder="Search"
-              onChange={handleSearch}
+              onFocus={() => handleClickSearch(true, false)}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -356,7 +396,7 @@ const FemaleModels = () => {
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
-                    aria-controls="simple-menu"
+                    aria-controls="filter-menu"
                     onClick={handleClick}
                     aria-label="account of current user"
                     aria-haspopup="true"
@@ -370,146 +410,8 @@ const FemaleModels = () => {
             />
           </div>
         </Toolbar>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          elevation={0}
-          getContentAnchorEl={null}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          TransitionComponent={Slide}
-          transitionDuration={900}
-          style={{ zIndex: "900" }}
-        >
-          <MuiThemeProvider theme={themeMenu}>
-            <MenuItem>
-              <ListItemText
-                style={
-                  filterArray.includes("MostInstagramFollowers")
-                    ? { color: "#007AFF" }
-                    : {}
-                }
-                primary="Most instagram followers"
-              />
-
-              <ListItemSecondaryAction>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      icon={
-                        <RadioButtonUncheckedIcon
-                          style={{ color: "#A3A3A3", opacity: "0.5" }}
-                        />
-                      }
-                      checkedIcon={
-                        <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
-                      }
-                      onChange={handleChangeCheckBox}
-                      name="MostInstagramFollowers"
-                    />
-                  }
-                />
-              </ListItemSecondaryAction>
-            </MenuItem>
-
-            <MenuItem>
-              <ListItemText
-                style={
-                  filterArray.includes("RunawayModel")
-                    ? { color: "#007AFF" }
-                    : {}
-                }
-                primary="Runaway model"
-              />
-
-              <ListItemSecondaryAction>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      icon={
-                        <RadioButtonUncheckedIcon
-                          style={{ color: "#A3A3A3", opacity: "0.5" }}
-                        />
-                      }
-                      checkedIcon={
-                        <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
-                      }
-                      onChange={handleChangeCheckBox}
-                      name="RunawayModel"
-                    />
-                  }
-                />
-              </ListItemSecondaryAction>
-            </MenuItem>
-
-            <MenuItem>
-              <ListItemText
-                style={
-                  filterArray.includes("PhotoshootModel")
-                    ? { color: "#007AFF" }
-                    : {}
-                }
-                primary="Photoshoot model"
-              />
-
-              <ListItemSecondaryAction>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      icon={
-                        <RadioButtonUncheckedIcon
-                          style={{ color: "#A3A3A3", opacity: "0.5" }}
-                        />
-                      }
-                      checkedIcon={
-                        <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
-                      }
-                      name="PhotoshootModel"
-                      onChange={handleChangeCheckBox}
-                    />
-                  }
-                />
-              </ListItemSecondaryAction>
-            </MenuItem>
-            <MenuItem>
-              <ListItemText
-                style={
-                  filterArray.includes("NewestJob") ? { color: "#007AFF" } : {}
-                }
-                primary="Newest job"
-              />
-
-              <ListItemSecondaryAction>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      icon={
-                        <RadioButtonUncheckedIcon
-                          style={{ color: "#A3A3A3", opacity: "0.5" }}
-                        />
-                      }
-                      checkedIcon={
-                        <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
-                      }
-                      name="NewestJob"
-                      onChange={handleChangeCheckBox}
-                    />
-                  }
-                />
-              </ListItemSecondaryAction>
-            </MenuItem>
-          </MuiThemeProvider>
-        </Menu>
       </AppBar>
+
       <div className={classes.offset} />
       <div style={{ minHeight: "40px" }} />
 
@@ -517,6 +419,7 @@ const FemaleModels = () => {
         component="nav"
         className={classes.root}
         aria-label="mailbox folders"
+        style={{ paddingTop: 0 }}
       >
         <Paper
           style={{
@@ -537,7 +440,11 @@ const FemaleModels = () => {
           >
             <Tab
               className={classes.tab}
-              style={{ paddingLeft: "2px" }}
+              style={{
+                paddingRight: "9px",
+                paddingLeft: "9px",
+                paddingTop: "2px",
+              }}
               label="All"
               value={0}
             />
@@ -547,13 +454,17 @@ const FemaleModels = () => {
               style={
                 value === 0 || value === 1
                   ? { display: "none" }
-                  : { height: "2.5vh", transform: "translateY(0.5vh)" }
+                  : { height: "1.5vh", transform: "translateY(1vh)" }
               }
             />
 
             <Tab
               className={classes.tab}
-              style={{ paddingRight: "4px", paddingTop: "2px" }}
+              style={{
+                paddingRight: "9px",
+                paddingLeft: "9px",
+                paddingTop: "2px",
+              }}
               label="Top"
               value={1}
             />
@@ -563,12 +474,16 @@ const FemaleModels = () => {
               style={
                 value === 2 || value === 1
                   ? { display: "none" }
-                  : { height: "2.5vh", transform: "translateY(0.5vh)" }
+                  : { height: "1.5vh", transform: "translateY(1vh)" }
               }
             />
             <Tab
               className={classes.tab}
-              style={{ paddingRight: "4px", paddingTop: "2px" }}
+              style={{
+                paddingRight: "9px",
+                paddingLeft: "9px",
+                paddingTop: "2px",
+              }}
               label="New Face"
               value={2}
             />
@@ -581,7 +496,7 @@ const FemaleModels = () => {
               marginLeft: "4%",
               color: "#A3A3A3",
               textTransform: "uppercase",
-              fontSize: "10px",
+              fontSize: "9px",
               fontWeight: "600",
               fontFamily: [
                 "-apple-system",
@@ -595,7 +510,7 @@ const FemaleModels = () => {
             {FemaleModels.length} models
           </p>
           {FemaleModels.map((FemaleModel, index) => {
-            let letter = FemaleModel.firstname.charAt(0);
+            let letter = FemaleModel.firstname.charAt(0).toUpperCase();
             if (letters.includes(letter)) {
               letter = "";
             } else {
@@ -629,7 +544,13 @@ const FemaleModels = () => {
                     />
                   </ListItemAvatar>
                   <ListItemText style={{ marginLeft: 0 }}>
-                    <span style={{ letterSpacing: "0" }}>
+                    <span
+                      style={{
+                        letterSpacing: "0",
+                        fontWeight: "500",
+                        textTransform: "capitalize",
+                      }}
+                    >
                       {FemaleModel.firstname + " "}
                     </span>
                     <b>{FemaleModel.lastname}</b>
@@ -641,17 +562,207 @@ const FemaleModels = () => {
           })}
         </MuiThemeProvider>
       </List>
-      {Boolean(anchorEl) && (
-        <div
-          style={{
-            backgroundColor: "rgba(0,0,0,0.5)",
-            height: "1000px",
-            position: "absolute",
-            top: "0",
-            width: "100%",
-          }}
-        ></div>
+
+      <div id="fmodelDiv"></div>
+
+      {inSearch === true && (
+        <div>
+          <div
+            onClick={() => handleClickSearch(false, false)}
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              position: "absolute",
+              top: "0",
+              width: "100%",
+              height: "1000px",
+              zIndex: 9998,
+            }}
+          ></div>
+          <div
+            style={{
+              backgroundColor: "white",
+              position: "absolute",
+              top: 0,
+              width: "100%",
+              zIndex: 9999,
+            }}
+          >
+            <AppBar position="fixed" className={classes.appBar}>
+              <Toolbar style={{ paddingTop: "16px" }}>
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+
+                  <InputBase
+                    autoFocus
+                    placeholder="Search"
+                    onChange={handleSearch}
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput,
+                    }}
+                    value={search}
+                    inputProps={{ "aria-label": "search" }}
+                  />
+                </div>
+                <Button
+                  onClick={() => handleClickSearch(false, true)}
+                  style={{
+                    color: "#1F89FF",
+                    //paddingRight: "16px",
+                    paddingLeft: "16px",
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                    marginRight: "10px",
+                    letterSpacing: 0,
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Toolbar>
+            </AppBar>
+          </div>
+        </div>
       )}
+
+      <MuiThemeProvider theme={themeMenu}>
+        <Menu
+          id="filter-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={true}
+          //onClose={handleClose}
+          elevation={0}
+          getContentAnchorEl={null}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          TransitionComponent={Slide}
+          //transitionDuration={900}
+          // style={{ zIndex: "900" }}
+        >
+          <MenuItem>
+            <ListItemText
+              style={
+                filterArray.includes("MostInstagramFollowers")
+                  ? { color: "#007AFF" }
+                  : {}
+              }
+              primary="Most instagram followers"
+            />
+
+            <ListItemSecondaryAction>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    icon={
+                      <RadioButtonUncheckedIcon
+                        style={{ color: "#A3A3A3", opacity: "0.5" }}
+                      />
+                    }
+                    checkedIcon={
+                      <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
+                    }
+                    onChange={handleChangeCheckBox}
+                    name="MostInstagramFollowers"
+                  />
+                }
+              />
+            </ListItemSecondaryAction>
+          </MenuItem>
+
+          <MenuItem>
+            <ListItemText
+              style={
+                filterArray.includes("RunawayModel") ? { color: "#007AFF" } : {}
+              }
+              primary="Runaway model"
+            />
+
+            <ListItemSecondaryAction>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    icon={
+                      <RadioButtonUncheckedIcon
+                        style={{ color: "#A3A3A3", opacity: "0.5" }}
+                      />
+                    }
+                    checkedIcon={
+                      <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
+                    }
+                    onChange={handleChangeCheckBox}
+                    name="RunawayModel"
+                  />
+                }
+              />
+            </ListItemSecondaryAction>
+          </MenuItem>
+
+          <MenuItem>
+            <ListItemText
+              style={
+                filterArray.includes("PhotoshootModel")
+                  ? { color: "#007AFF" }
+                  : {}
+              }
+              primary="Photoshoot model"
+            />
+
+            <ListItemSecondaryAction>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    icon={
+                      <RadioButtonUncheckedIcon
+                        style={{ color: "#A3A3A3", opacity: "0.5" }}
+                      />
+                    }
+                    checkedIcon={
+                      <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
+                    }
+                    name="PhotoshootModel"
+                    onChange={handleChangeCheckBox}
+                  />
+                }
+              />
+            </ListItemSecondaryAction>
+          </MenuItem>
+          <MenuItem>
+            <ListItemText
+              style={
+                filterArray.includes("NewestJob") ? { color: "#007AFF" } : {}
+              }
+              primary="Newest job"
+            />
+
+            <ListItemSecondaryAction>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    icon={
+                      <RadioButtonUncheckedIcon
+                        style={{ color: "#A3A3A3", opacity: "0.5" }}
+                      />
+                    }
+                    checkedIcon={
+                      <CheckCircleRoundedIcon style={{ color: "#007AFF" }} />
+                    }
+                    name="NewestJob"
+                    onChange={handleChangeCheckBox}
+                  />
+                }
+              />
+            </ListItemSecondaryAction>
+          </MenuItem>
+        </Menu>
+      </MuiThemeProvider>
     </div>
   );
 };

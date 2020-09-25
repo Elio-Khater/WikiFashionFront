@@ -3,7 +3,6 @@ import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Menu from "@material-ui/core/Menu";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -16,7 +15,7 @@ import {
   MuiThemeProvider,
 } from "@material-ui/core/styles";
 import { ListItemSecondaryAction } from "@material-ui/core";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import UserServices from "../../../Services/UserServices";
 
 const theme = createMuiTheme({
@@ -167,30 +166,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Agencies = () => {
-  const AgenciesData = [
-    { id: 1, name: "Viva Paris", isMotheragency: 1 },
-    { id: 2, name: "IMG NYC", isMotheragency: 0 },
-    { id: 3, name: "IMG Milan", isMotheragency: 0 },
-    { id: 4, name: "IMG Israel", isMotheragency: 0 },
-    { id: 5, name: "Women Berlin", isMotheragency: 0 },
-  ];
   let { id } = useParams();
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const nextPath = (path) => {
-    history.push(path);
-  };
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
-  const [value, setValue] = React.useState("");
   const history = useHistory();
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();
 
   const [agencies, setAgencies] = useState([]);
@@ -201,6 +179,10 @@ const Agencies = () => {
     }
     fetchData();
   }, []);
+
+  const redirect = (link) => {
+    window.location.href = link;
+  };
   return (
     <div className={classes.bggrey}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -214,7 +196,7 @@ const Agencies = () => {
               style={{ color: "#007AFF" }}
             >
               <ArrowBackIosRoundedIcon
-                style={{ fontSize: "1.8rem", zIndex: "2000" }}
+                style={{ fontSize: "1.6rem", zIndex: "2000" }}
               />
             </IconButton>
           </div>
@@ -232,7 +214,7 @@ const Agencies = () => {
         <MuiThemeProvider theme={theme}>
           {agencies.map((agency, index) => (
             <div className={classes.row}>
-              <ListItem button>
+              <ListItem button onClick={() => redirect(agency.link)}>
                 <ListItemText primary={agency.name} />
 
                 <ListItemSecondaryAction>

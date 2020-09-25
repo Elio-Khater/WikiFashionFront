@@ -30,8 +30,11 @@ import CategoryServices from "../Services/CategoryServices";
 
 const BlueRadio = withStyles({
   root: {
+    color: "#A3A3A3",
+    opacity: "0.5",
     "&$checked": {
       color: "#007AFF",
+      opacity: "1",
     },
   },
   checked: {},
@@ -59,15 +62,17 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
+
   title: {
-    position: "absolute",
-    top: "20%",
     width: "100%",
     flexGrow: 1,
     zIndex: 0,
     textAlign: "center",
     color: "black",
-    fontWeight: "400",
+    fontWeight: "600",
+    position: "absolute",
+    letterSpacing: "0",
+    top: "15%",
   },
 
   search: {
@@ -302,20 +307,22 @@ const Country = () => {
         <Toolbar className={classes.toolRoot}>
           <div>
             <IconButton
+              onClick={() => history.goBack()}
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              onClick={() => history.goBack()}
               style={{ color: "#007AFF" }}
             >
-              <ArrowBackIosRoundedIcon />
+              <ArrowBackIosRoundedIcon
+                style={{ fontSize: "1.6rem", zIndex: "2000" }}
+              />
             </IconButton>
           </div>
           <Typography variant="h6" className={classes.title}>
             Current location
           </Typography>
         </Toolbar>
-        <Toolbar>
+        <Toolbar style={{ marginTop: "0.5%" }}>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -345,7 +352,9 @@ const Country = () => {
                 <ListItemAvatar style={{ padding: "10px 0" }}>
                   <Avatar
                     className={classes.pic}
-                    src={"https://i.picsum.photos/id/342/200/300.jpg"}
+                    src={
+                      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/International_Flag_of_Planet_Earth.svg/1280px-International_Flag_of_Planet_Earth.svg.png"
+                    }
                   />
                 </ListItemAvatar>
                 <ListItemText
@@ -380,7 +389,9 @@ const Country = () => {
                 <ListItemAvatar style={{ padding: "10px 0" }}>
                   <Avatar
                     className={classes.pic}
-                    src={"https://i.picsum.photos/id/342/200/300.jpg"}
+                    src={
+                      "https://cdn.webshopapp.com/shops/94414/files/51865160/flag-of-argentina.jpg"
+                    }
                   />
                 </ListItemAvatar>
                 <ListItemText
@@ -415,7 +426,45 @@ const Country = () => {
                 <ListItemAvatar style={{ padding: "10px 0" }}>
                   <Avatar
                     className={classes.pic}
-                    src={"https://i.picsum.photos/id/342/200/300.jpg"}
+                    src={
+                      "https://cdn.webshopapp.com/shops/94414/files/52123490/flag-of-brazil.jpg"
+                    }
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  style={
+                    filterArray.includes("Brazil")
+                      ? { color: "#007AFF", margin: 0 }
+                      : { color: "black", margin: 0 }
+                  }
+                >
+                  Brazil
+                </ListItemText>
+                <ListItemSecondaryAction>
+                  <FormControlLabel
+                    control={
+                      <RadioGroup
+                        aria-label="gportfolio"
+                        name="Brazil"
+                        value={value}
+                        onChange={handleChange}
+                      >
+                        <FormControlLabel
+                          value="Brazil"
+                          control={<BlueRadio />}
+                        />
+                      </RadioGroup>
+                    }
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+              <ListItem button>
+                <ListItemAvatar style={{ padding: "10px 0" }}>
+                  <Avatar
+                    className={classes.pic}
+                    src={
+                      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Flag_of_Belgium.svg/1200px-Flag_of_Belgium.svg.png"
+                    }
                   />
                 </ListItemAvatar>
                 <ListItemText
@@ -438,6 +487,78 @@ const Country = () => {
                       >
                         <FormControlLabel
                           value="Belgium"
+                          control={<BlueRadio />}
+                        />
+                      </RadioGroup>
+                    }
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+              <ListItem button>
+                <ListItemAvatar style={{ padding: "10px 0" }}>
+                  <Avatar
+                    className={classes.pic}
+                    src={
+                      "https://cdn.webshopapp.com/shops/94414/files/52378772/flag-of-croatia.jpg"
+                    }
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  style={
+                    filterArray.includes("Croatia")
+                      ? { color: "#007AFF", margin: 0 }
+                      : { color: "black", margin: 0 }
+                  }
+                >
+                  Croatia
+                </ListItemText>
+                <ListItemSecondaryAction>
+                  <FormControlLabel
+                    control={
+                      <RadioGroup
+                        aria-label="gportfolio"
+                        name="Croatia"
+                        value={value}
+                        onChange={handleChange}
+                      >
+                        <FormControlLabel
+                          value="Croatia"
+                          control={<BlueRadio />}
+                        />
+                      </RadioGroup>
+                    }
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+              <ListItem button>
+                <ListItemAvatar style={{ padding: "10px 0" }}>
+                  <Avatar
+                    className={classes.pic}
+                    src={
+                      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Flag_of_Denmark.svg/1200px-Flag_of_Denmark.svg.png"
+                    }
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  style={
+                    filterArray.includes("Denmark")
+                      ? { color: "#007AFF", margin: 0 }
+                      : { color: "black", margin: 0 }
+                  }
+                >
+                  Denmark
+                </ListItemText>
+                <ListItemSecondaryAction>
+                  <FormControlLabel
+                    control={
+                      <RadioGroup
+                        aria-label="gportfolio"
+                        name="Denmark"
+                        value={value}
+                        onChange={handleChange}
+                      >
+                        <FormControlLabel
+                          value="Denmark"
                           control={<BlueRadio />}
                         />
                       </RadioGroup>

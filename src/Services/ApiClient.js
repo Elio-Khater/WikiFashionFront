@@ -9,4 +9,12 @@ const instance = axios.create({
   //baseURL: "https://localhost:44369",
 });
 
+export const multipartInstance = axios.create({
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+
+  baseURL: "https://wikifashionwebapi.azurewebsites.net",
+  //baseURL: "https://localhost:44369",
+});
 export default instance;

@@ -1,21 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Menu from "@material-ui/core/Menu";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Button from "@material-ui/core/Button";
 import InstagramIcon from "@material-ui/icons/Instagram";
-import {
-  createMuiTheme,
-  makeStyles,
-  MuiThemeProvider,
-} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import UserServices from "../../../Services/UserServices";
 
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
@@ -127,23 +122,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LinkInsta = () => {
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const nextPath = (path) => {
-    history.push(path);
-  };
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
-  const [value, setValue] = React.useState("");
   const history = useHistory();
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();
-
+  let { id } = useParams();
+  const responseFacebook = async (response) => {
+    if (response && response.userID) {
+      console.log(response.data);
+      await UserServices.Login(id, 1);
+      history.push("/model/" + id);
+    }
+  };
   return (
     <div className={classes.bggrey} style={{ borderBottom: 0, height: "100%" }}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -157,7 +145,7 @@ const LinkInsta = () => {
               style={{ color: "#007AFF" }}
             >
               <ArrowBackIosRoundedIcon
-                style={{ fontSize: "1.8rem", zIndex: "2000" }}
+                style={{ fontSize: "1.6rem", zIndex: "2000" }}
               />
             </IconButton>
           </div>
@@ -188,26 +176,33 @@ const LinkInsta = () => {
           padding: "0 0 10% 0",
         }}
       >
-        <Button
-          variant="contained"
-          color="primary"
-          style={{
-            fontSize: "1rem",
-            borderRadius: "17px 17px",
-            width: "80%",
-            height: "auto",
-          }}
-        >
-          <IconButton
-            size="small"
-            aria-label="comments"
-            className={classes.icon}
-            style={{ marginRight: "1%" }}
-          >
-            <InstagramIcon fontSize="small" style={{ color: "white" }} />
-          </IconButton>
-          Link this instagram account
-        </Button>
+        <FacebookLogin
+          appId="327859621544675"
+          callback={responseFacebook}
+          render={(renderProps) => (
+            <Button
+              onClick={renderProps.onClick}
+              variant="contained"
+              color="primary"
+              style={{
+                fontSize: "1rem",
+                borderRadius: "17px 17px",
+                width: "80%",
+                height: "auto",
+              }}
+            >
+              <IconButton
+                size="small"
+                aria-label="comments"
+                className={classes.icon}
+                style={{ marginRight: "1%" }}
+              >
+                <InstagramIcon fontSize="small" style={{ color: "white" }} />
+              </IconButton>
+              Link this instagram account
+            </Button>
+          )}
+        />
       </div>
     </div>
   );

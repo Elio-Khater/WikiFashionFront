@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -19,29 +19,18 @@ import InstagramIcon from "@material-ui/icons/Instagram";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import { withStyles } from "@material-ui/core/styles";
 import Api from "../../../Services/ApiClient";
+import VerifiedUserRoundedIcon from "@material-ui/icons/VerifiedUserRounded";
 import {
   createMuiTheme,
   makeStyles,
   MuiThemeProvider,
 } from "@material-ui/core/styles";
-import {
-  ListItemSecondaryAction,
-  Grow,
-  Slide,
-  Collapse,
-} from "@material-ui/core";
+import { ListItemSecondaryAction } from "@material-ui/core";
 import { useHistory, useParams } from "react-router-dom";
 import UserServices from "../../../Services/UserServices";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-const settings = {
-  dots: false,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-};
 const useStyles = makeStyles((theme) => ({
   rootAppBar: {
     flexGrow: 1,
@@ -51,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   dropdown: {
     transition: theme.transitions.create(["transform"], {
-      duration: 900,
+      duration: 500,
     }),
   },
   dropdownOpen: {
@@ -81,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
+    marginTop: 0,
     marginLeft: "2%",
     flexGrow: 1,
     textAlign: "center",
@@ -163,8 +153,8 @@ const useStyles = makeStyles((theme) => ({
 
 const BlueRadio = withStyles({
   root: {
-    color: "#A3A3A3",
-    opacity: "0.5",
+    color: "#F5F3F5",
+    //pacity: "0.5",
     "&$checked": {
       color: "#007AFF",
       opacity: "1",
@@ -179,11 +169,12 @@ const theme = createMuiTheme({
       body1: {
         fontWeight: "700",
         lineHeight: "1.2",
+        letterSpacing: 0,
       },
       body2: {
-        fontSize: "0.68rem",
-        fontWeight: "400",
-        color: "#A3A3A3",
+        fontSize: "0.64rem",
+        fontWeight: "300",
+        color: "#A3A3A3 !important",
         letterSpacing: 0,
       },
     },
@@ -202,7 +193,7 @@ const themeList = createMuiTheme({
   overrides: {
     MuiIconButton: {
       root: {
-        color: "#A3A3A3",
+        color: "#D2D2D2",
       },
       sizeSmall: {
         fontSize: "1rem",
@@ -252,8 +243,8 @@ const themeListBot = createMuiTheme({
     },
     MuiListItemText: {
       multiline: {
-        marginTop: "3px",
-        marginBottom: "3px",
+        marginTop: "2px",
+        marginBottom: "1.5px",
       },
     },
     MuiTypography: {
@@ -266,8 +257,10 @@ const themeListBot = createMuiTheme({
         letterSpacing: "0",
       },
       body2: {
-        lineHeight: "1",
+        fontWeight: "400",
+        lineHeight: "1.1",
         letterSpacing: 0,
+        fontSize: "0.95rem",
       },
     },
   },
@@ -281,11 +274,31 @@ const themeListBot = createMuiTheme({
     ].join(","),
   },
 });
+
 const theme1 = createMuiTheme({
+  transitions: { create: () => "none" },
   overrides: {
+    MuiTypography: {
+      body1: {
+        fontWeight: "450",
+      },
+    },
     MuiListItemSecondaryAction: {
       root: {
         right: 0,
+      },
+    },
+    MuiPaper: {
+      root: {
+        width: "100%",
+        maxWidth: "unset!important",
+        left: "0!important",
+      },
+      elevation4: {
+        boxShadow: "unset",
+      },
+      rounded: {
+        borderRadius: "15px",
       },
     },
     MuiMenuItem: {
@@ -295,9 +308,11 @@ const theme1 = createMuiTheme({
         paddingTop: "2px",
       },
     },
-    MuiMenu: {
+    MuiPopover: {
       paper: {
-        top: "78px!important",
+        // top: "78px!important",
+        position: "unset",
+        minHeight: "0",
       },
     },
     MuiSvgIcon: {
@@ -325,34 +340,25 @@ const theme1 = createMuiTheme({
 });
 
 const Model = () => {
-  const ModelData = {
-    id: 1,
-    firstname: "Anastasia",
-    lastname: "Brister",
-    country: "Paris",
-    image: "https://i.picsum.photos/id/342/200/300.jpg",
-    social: "5k",
-    heightinch: "5'10.5''",
-    heightcm: "180",
-    motheragency: "IMG Paris (MA)",
-    occupation: "Model(since 2008) | Actress",
-    birth: "17/02/2001 (18), Toronto, Canada",
-    language: "English French Swedish",
-    bio:
-      "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum  lorem ipsum lorem ipsum lorem ipsum",
-  };
+  let firstClientX;
+  let firstClientY;
+  let clientX;
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   const nextPath = (path) => {
     history.push(path);
   };
   const handleClick = (event) => {
     if (anchorEl) {
       setAnchorEl(null);
+      document.getElementById("portfolio-menu").style.height = "0px";
+      document.getElementById("modelDiv").style.opacity = 0;
+      document.getElementById("modelDiv").style.zIndex = "-1";
     } else {
       document.getElementsByTagName("html")[0].style.overflowY = "hidden";
+      document.getElementById("modelDiv").style.opacity = "0.5";
+      document.getElementById("modelDiv").style.zIndex = "900";
+      document.getElementById("portfolio-menu").style.height = "350px";
+
       setAnchorEl(event.currentTarget);
     }
   };
@@ -365,31 +371,84 @@ const Model = () => {
       setFilterArray(filtersLeft);
     }
   };
-  var items = [
-    {
-      image: "https://i.picsum.photos/id/342/200/300.jpg",
-    },
-    {
-      image: "https://i.picsum.photos/id/343/200/300.jpg",
-    },
-  ];
 
   let { id } = useParams();
-  const [filterArray, setFilterArray] = useState([]);
-  const [value, setValue] = React.useState("");
+  const [filterArray, setFilterArray] = useState(["portfolio"]);
+  const [value, setValue] = React.useState("portfolio");
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();
   const [model, setModel] = useState({});
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [verified, setVerified] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
-      console.log("fet");
+      document.getElementsByTagName("html")[0].style.backgroundColor = "white";
+      document.getElementsByTagName("body")[0].style.backgroundColor = "white";
+      document.getElementById("root").style.backgroundColor = "white";
+
       const result = await UserServices.getUserById(id);
-      console.log(result.data);
       setModel(result.data);
     }
     fetchData();
+    return () => {
+      document.getElementsByTagName("html")[0].style.backgroundColor =
+        "#f4f4f4";
+      document.getElementsByTagName("body")[0].style.backgroundColor =
+        "#f4f4f4";
+      document.getElementById("root").style.backgroundColor = "#f4f4f4";
+    };
   }, []);
+
+  // const touchStart = useCallback(
+  //   (e) => {
+  //     // Update coordinates
+  //     setCoords({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+  //   },
+  //   [setCoords]
+  // );
+
+  // const preventTouch = useCallback(
+  //   (e) => {
+  //     // Update coordinates
+  //     const minValue = 5; // threshold
+
+  //     let clientX = e.touches[0].clientX - coords.x;
+  //     let clientY = e.touches[0].clientY - coords.y;
+
+  //     // Vertical scrolling does not work when you start swiping horizontally.
+  //     if (Math.abs(clientX) > minValue) {
+  //       e.preventDefault();
+  //       e.returnValue = false;
+  //       return false;
+  //     }
+  //   },
+  //   [setCoords]
+  // );
+
+  function touchStart(e) {
+    firstClientX = e.touches[0].clientX;
+    firstClientY = e.touches[0].clientY;
+  }
+
+  function preventTouch(e) {
+    const minValue = 2; // threshold
+
+    clientX = e.touches[0].clientX - firstClientX;
+
+    // Vertical scrolling does not work when you start swiping horizontally.
+    if (Math.abs(clientX) > minValue) {
+      e.preventDefault();
+      e.returnValue = false;
+      return false;
+    }
+  }
+
+  // Add event listener using our hook
+  useEventListener("touchstart", touchStart, true);
+  useEventListener("touchmove", preventTouch, false);
+
   return (
     <div>
       <div className={classes.rootAppBar} style={{ borderBottom: 0 }}>
@@ -403,14 +462,32 @@ const Model = () => {
                 onClick={() => history.goBack()}
                 style={{ color: "#007AFF" }}
               >
-                <ArrowBackIosRoundedIcon style={{ fontSize: "1.8rem" }} />
+                <ArrowBackIosRoundedIcon style={{ fontSize: "1.6rem" }} />
               </IconButton>
             </div>
             <Typography variant="h6" className={classes.title}>
               <ListItem className={classes.title}>
                 <MuiThemeProvider theme={theme}>
                   <ListItemText
-                    primary={model.firstname + " " + model.lastname}
+                    primary={
+                      <Typography
+                        variant="body1"
+                        //className={classes.secondary}
+                        //color="textSecondary"
+                        display="block"
+                      >
+                        {model.firstname + " " + model.lastname}
+                        {model.islogged && (
+                          <VerifiedUserRoundedIcon
+                            style={{
+                              fontSize: "unset",
+                              width: "0.8em",
+                              height: "0.8em",
+                            }}
+                          />
+                        )}
+                      </Typography>
+                    }
                     secondary={"Now in" + " " + model.country}
                   />
                 </MuiThemeProvider>
@@ -418,14 +495,15 @@ const Model = () => {
             </Typography>
 
             <Button
-              onClick={() => nextPath("/linkinsta")}
+              onClick={() => nextPath("/linkinsta/" + model.id)}
               style={{
                 color: "#1F89FF",
-                paddingRight: "16px",
+                paddingRight: "0px",
                 paddingLeft: "9px",
                 fontSize: "1.1rem",
-                fontWeight: "700",
+                fontWeight: "600",
                 marginRight: "10px",
+                letterSpacing: 0,
               }}
             >
               <span>Edit </span>
@@ -448,14 +526,14 @@ const Model = () => {
             }}
           >
             <ListItem>
-              <ListItemText primary="Portofolio" style={{ marginLeft: "3%" }} />
+              <ListItemText primary="Portfolio" style={{ marginLeft: "3%" }} />
 
               <ListItemSecondaryAction>
                 <IconButton
                   size="medium"
                   edge="end"
                   aria-label="comments"
-                  aria-controls="simple-menu"
+                  aria-controls="portfolio-menu"
                   onClick={handleClick}
                   style={{ marginLeft: "-35%" }}
                 >
@@ -473,36 +551,33 @@ const Model = () => {
             </ListItem>
           </div>
         </List>
-
-        <Menu
-          onClose={handleClose}
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          //onClose={handleClose}
-          elevation={0}
-          getContentAnchorEl={null}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          TransitionComponent={Slide}
-          transitionDuration={900}
-          style={{ top: "-15px", zIndex: 900 }}
-        >
-          <MuiThemeProvider theme={theme1}>
+        <MuiThemeProvider theme={theme1}>
+          <Menu
+            id="portfolio-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={true}
+            //onClose={handleClose}
+            elevation={0}
+            getContentAnchorEl={null}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+            //TransitionComponent={Slide}
+            //transitionDuration={900}
+          >
             <MenuItem>
               <ListItemText
                 className={classes.portfolio}
                 style={
                   filterArray.includes("portfolio") ? { color: "#007AFF" } : {}
                 }
-                primary="Portofolio"
+                primary="Portfolio"
               />
 
               <ListItemSecondaryAction>
@@ -657,8 +732,8 @@ const Model = () => {
                 />
               </ListItemSecondaryAction>
             </MenuItem>
-          </MuiThemeProvider>
-        </Menu>
+          </Menu>
+        </MuiThemeProvider>
         <div style={{ backgroundColor: "#F8F8F8" }}>
           <List
             component="nav"
@@ -668,22 +743,68 @@ const Model = () => {
           >
             <MuiThemeProvider theme={themeList}>
               <div className={classes.row}>
-                <Slider {...settings}>
-                  {model.image &&
-                    model.image.map((image) => (
-                      <div>
-                        <img
-                          src={Api.defaults.baseURL + "/" + image}
-                          style={{ width: "100%", height: "500px" }}
-                        />
-                      </div>
-                    ))}
-                </Slider>
+                <div id="scroll-x">
+                  <Slider
+                    beforeChange={(current, next) => setActiveSlide(next)}
+                    dots={false}
+                    infinite={true}
+                    speed={500}
+                    slidesToShow={1}
+                    slidesToScroll={1}
+                  >
+                    {model.image &&
+                      model.image.map((image) => (
+                        <div>
+                          <img
+                            id="scroll-y"
+                            src={Api.defaults.baseURL + "/" + image}
+                            style={{
+                              width: "100%",
+                              height: "500px",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </div>
+                      ))}
+                  </Slider>
+                  <div
+                    style={{
+                      width: "17%",
+                      background: "black",
+                      opacity: "0.12",
+                      position: "absolute",
+                      top: "2%",
+                      right: "4%",
+                      textAlign: "center",
+                      zIndex: 900,
+                      borderRadius: "10px",
+                      padding: "2px 0px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "white",
+                        fontWeight: "600",
+                        letterSpacing: 0,
+                        fontSize: "0.8rem",
+                        fontFamily: [
+                          "-apple-system",
+                          "BlinkMacSystemFont",
+                          "Roboto",
+                          "Ubuntu",
+                          "sans-serif",
+                        ].join(","),
+                      }}
+                    >
+                      {activeSlide + 1} of {model.image && model.image.length}
+                    </span>
+                  </div>
+                </div>
 
                 <ListItem
                   style={{ paddingLeft: "16px", paddingTop: "5px" }}
                   button
-                  onClick={() => nextPath("/socials")}
+                  onClick={() => nextPath("/socials/" + model.id)}
                 >
                   <ListItemText primary="Socials" />
 
@@ -755,7 +876,7 @@ const Model = () => {
                     </IconButton>
                   </ListItemSecondaryAction>
                 </ListItem>
-                <Divider style={{ height: "4px", color: "#A3A3A3" }} />
+                <Divider style={{ height: "8px", background: "#F7F7F7" }} />
               </div>
             </MuiThemeProvider>
             <MuiThemeProvider theme={themeListBot}>
@@ -764,8 +885,18 @@ const Model = () => {
                   <ListItemText
                     style={{ paddingTop: "3px", letterSpacing: 0 }}
                     primary="Occupation"
-                    secondary="Model (since 2008)"
-                  />
+                    secondary={
+                      <Typography
+                        variant="body2"
+                        className={classes.secondary}
+                        color="textSecondary"
+                        display="block"
+                      >
+                        Model{" "}
+                        <span style={{ color: "#a3a3a3" }}>(since 2008)</span>
+                      </Typography>
+                    }
+                  ></ListItemText>
                 </ListItem>
                 <Divider className={classes.dividerColor} />
               </div>
@@ -773,7 +904,7 @@ const Model = () => {
                 <ListItem button style={{ paddingLeft: "16px" }}>
                   <ListItemText
                     primary="Place and date of birth"
-                    secondary={model.birth}
+                    secondary={model.birthdate + " " + model.birthplace}
                   />
                 </ListItem>
                 <Divider className={classes.dividerColor} />
@@ -782,7 +913,16 @@ const Model = () => {
                 <ListItem button style={{ paddingLeft: "16px" }}>
                   <ListItemText
                     primary="Spoken languages"
-                    secondary={model.language}
+                    secondary={
+                      <Typography
+                        variant="body2"
+                        className={classes.secondary}
+                        color="textSecondary"
+                        display="block"
+                      >
+                        English <img src="/Countries/en.png" width="20px" />
+                      </Typography>
+                    }
                   />
                 </ListItem>
                 <Divider className={classes.dividerColor} />
@@ -796,21 +936,54 @@ const Model = () => {
             </MuiThemeProvider>
           </List>
         </div>
-        {Boolean(anchorEl) && (
-          <div
-            style={{
-              backgroundColor: "rgba(0,0,0,0.5)",
-              height: "1000px",
-              position: "absolute",
-              top: "20%",
-              width: "100%",
-              zIndex: 900,
-            }}
-          ></div>
-        )}
+
+        <div id="modelDiv"></div>
       </div>
     </div>
   );
 };
 
+// Hook
+function useEventListener(eventName, handler, passive, element = window) {
+  // Create a ref that stores handler
+  const savedHandler = useRef();
+
+  // Update ref.current value if handler changes.
+  // This allows our effect below to always get latest handler ...
+  // ... without us needing to pass it in effect deps array ...
+  // ... and potentially cause effect to re-run every render.
+  useEffect(() => {
+    savedHandler.current = handler;
+  }, [handler]);
+
+  useEffect(
+    () => {
+      // Make sure element supports addEventListener
+      // On
+      const isSupported = element && element.addEventListener;
+      if (!isSupported) return;
+
+      // Create event listener that calls handler function stored in ref
+      const eventListener = (event) => savedHandler.current(event);
+
+      // Add event listener
+      if (passive) {
+        element.addEventListener(eventName, eventListener);
+      } else {
+        element.addEventListener(eventName, eventListener, { passive: false });
+      }
+      // Remove event listener on cleanup
+      return () => {
+        if (passive) {
+          element.removeEventListener(eventName, eventListener);
+        } else {
+          element.removeEventListener(eventName, eventListener, {
+            passive: false,
+          });
+        }
+      };
+    },
+    [eventName, element] // Re-run if eventName or element changes
+  );
+}
 export default Model;

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     //marginTop: "2%",
     height: "100%",
   },
-  offset: theme.mixins.toolbar,
+  offset: { minHeight: "60px" },
   row: {
     // paddingTop: "2.5%",
     //paddingBottom: "2.5%",
@@ -60,7 +60,8 @@ const useStyles = makeStyles((theme) => ({
   toolRoot: {
     padding: 0,
     backgroundColor: theme.palette.background.paper,
-    marginBottom: "6px",
+    //marginBottom: "6px",
+    boxShadow: "0px 2px 7px -2px rgba(71,69,71,0.3)",
   },
 }));
 
@@ -139,6 +140,7 @@ const Home = () => {
         component="nav"
         className={classes.root}
         aria-label="mailbox folders"
+        //style={{ boxShadow: "0 -5px #F7F7F7" }}
       >
         {categories.map((category, index) => (
           <span key={category.id}>
@@ -152,7 +154,7 @@ const Home = () => {
               <ListItemText>
                 <span
                   style={{
-                    fontWeight: "400",
+                    fontWeight: "500",
                     marginLeft: "4%",
                     letterSpacing: "0",
                   }}

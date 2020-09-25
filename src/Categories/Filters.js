@@ -20,8 +20,9 @@ import {
   MuiThemeProvider,
 } from "@material-ui/core/styles";
 import { ListItemSecondaryAction } from "@material-ui/core";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Redirect } from "react-router-dom";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import AgenciesServices from "./../Services/AgenciesServices";
 
 const theme = createMuiTheme({
   overrides: {
@@ -38,7 +39,7 @@ const theme = createMuiTheme({
     },
     MuiIconButton: {
       root: {
-        color: "#A3A3A3",
+        color: "#878686",
       },
       sizeSmall: {
         fontSize: "0.9rem",
@@ -66,8 +67,9 @@ const themeText = createMuiTheme({
   overrides: {
     MuiTypography: {
       body1: {
-        fontWeight: "550",
+        fontWeight: "650",
         fontSize: "0.9rem",
+        letterSpacing: 0,
       },
     },
     MuiListItem: {
@@ -92,9 +94,18 @@ const themeText = createMuiTheme({
 });
 const themeList = createMuiTheme({
   overrides: {
+    MuiSvgIcon: {
+      fontSizeSmall: {
+        fontSize: "1rem",
+      },
+    },
     MuiChip: {
       label: {
         paddingLeft: "10px",
+      },
+      root: {
+        fontWeight: "650",
+        letterSpacing: 0,
       },
     },
     MuiListItem: {
@@ -102,19 +113,23 @@ const themeList = createMuiTheme({
         paddingTop: "10px",
         paddingBottom: "10px",
       },
+      secondaryAction: {
+        paddingLeft: "23px",
+      },
     },
     MuiTypography: {
       body1: {
-        fontWeight: "350",
+        fontWeight: "500",
         fontSize: "1.15rem",
+        letterSpacing: 0,
       },
     },
     MuiIconButton: {
       sizeSmall: {
-        fontSize: "0.9rem",
+        fontSize: "0.955rem",
       },
       root: {
-        color: "#A3A3A3",
+        color: "#878686",
       },
     },
   },
@@ -155,9 +170,10 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
   },
   point: {
-    fontSize: "0.3rem",
+    fontSize: "0.4rem",
     marginLeft: "17px",
     marginRight: "5px",
+    color: "#D6D6D6",
   },
 
   root: {
@@ -172,14 +188,16 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    marginLeft: "19.61px",
-    top: "20%",
+    marginLeft: "7%",
     width: "100%",
     flexGrow: 1,
     zIndex: 0,
     textAlign: "center",
     color: "black",
-    fontWeight: "400",
+    fontWeight: "600",
+    marginTop: "1.2%",
+    letterSpacing: "0",
+    // fontFamily: "SFPRO",
   },
   offset: theme.mixins.toolbar,
   search: {
@@ -259,11 +277,19 @@ const Filters = () => {
   const nextPath = (path) => {
     history.push(path);
   };
-  const handleClick = (event) => {
-    setAnchorEl(event.target.innerHTML);
+  const handleDone = () => {
+    history.push("/femalemodels/" + id + "/" + name, {
+      eyes: eyesColor,
+      agency: agency,
+    });
+  };
+  const handleClick = (id) => {
+    setAnchorEl(id);
+    setAgency(id);
   };
   const handleClick1 = (event) => {
-    setAnchorEl1(event.target.innerHTML);
+    setAnchorEl1(event.target.innerText);
+    setEyesColor(event.target.innerText);
   };
   const handleClick2 = (event) => {
     setAnchorEl2(event.target.innerHTML);
@@ -272,13 +298,25 @@ const Filters = () => {
     setValue(event.target.value);
   };
   const [value, setValue] = React.useState("");
+
   const history = useHistory();
-  const [anchorEl, setAnchorEl] = React.useState("All");
-  const [anchorEl1, setAnchorEl1] = React.useState("All");
+  let { id, name } = useParams();
+  const [anchorEl, setAnchorEl] = React.useState(0);
+  const [anchorEl1, setAnchorEl1] = React.useState("");
   const [anchorEl2, setAnchorEl2] = React.useState("All");
+  const [agencies, setAgencies] = React.useState([]);
+  const [eyesColor, setEyesColor] = React.useState("");
+  const [agency, setAgency] = React.useState("");
+
   const classes = useStyles();
 
-  const [agencies, setAgencies] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      const result = await AgenciesServices.getAgencies();
+      setAgencies(result.data);
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className={classes.bggrey}>
@@ -290,17 +328,25 @@ const Filters = () => {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={() => history.goBack()}
-              style={{ color: "#007AFF" }}
+              size="large"
+              style={{ color: "#1F89FF", marginTop: "4%" }}
             >
-              <ArrowBackIosRoundedIcon />
+              <ArrowBackIosRoundedIcon style={{ fontSize: "1.6rem" }} />
             </IconButton>
           </div>
           <Typography variant="h6" className={classes.title}>
             Filters
           </Typography>
           <Button
-            onClick={() => nextPath("/filters")}
-            style={{ color: "#007AFF", paddingRight: "16px" }}
+            onClick={handleDone}
+            style={{
+              color: "#1F89FF",
+              paddingRight: "16px",
+              paddingLeft: "9px",
+              fontSize: "1.1rem",
+              fontWeight: "700",
+              marginRight: "10px",
+            }}
           >
             Done
           </Button>
@@ -324,7 +370,11 @@ const Filters = () => {
           <Divider className={classes.dividerColor} />
           <div>
             <MuiThemeProvider theme={themeList}>
-              <ListItem button onClick={() => nextPath("/Country")}>
+              <ListItem
+                button
+                style={{ marginleft: "25px" }}
+                onClick={() => nextPath("/Country")}
+              >
                 <ListItemText primary="Current location" />
                 <ListItemSecondaryAction>
                   <IconButton
@@ -333,7 +383,7 @@ const Filters = () => {
                     edge="end"
                     aria-label="comments"
                   >
-                    (NYC,UnitedStates)
+                    (NYC, United States)
                     <ArrowForwardIosRoundedIcon
                       fontSize="small"
                       style={{ paddingLeft: "0.2em" }}
@@ -348,7 +398,8 @@ const Filters = () => {
 
               <span
                 style={{
-                  marginLeft: "14px",
+                  letterSpacing: 0,
+                  marginLeft: "12px",
                   color: "#A3A3A3",
                   fontSize: "12px",
                   fontWeight: "700",
@@ -367,84 +418,47 @@ const Filters = () => {
               <ListItem className={classes.chip}>
                 <Chip
                   icon={
-                    anchorEl === "All" ? (
+                    anchorEl === 0 ? (
                       <DoneRoundedIcon className={classes.juste} />
                     ) : (
                       <FiberManualRecordIcon className={classes.point} />
                     )
                   }
                   style={
-                    anchorEl === "All"
+                    anchorEl === 0
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="All"
-                  onClick={handleClick}
+                  onClick={() => handleClick(0)}
                 />
-                <Chip
-                  icon={
-                    anchorEl === "Women" ? (
-                      <DoneRoundedIcon className={classes.juste} />
-                    ) : (
-                      <FiberManualRecordIcon className={classes.point} />
-                    )
-                  }
-                  style={
-                    anchorEl === "Women"
-                      ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
-                  }
-                  label="Women"
-                  onClick={handleClick}
-                />
-                <Chip
-                  icon={
-                    anchorEl === "NewMadisson" ? (
-                      <DoneRoundedIcon className={classes.juste} />
-                    ) : (
-                      <FiberManualRecordIcon className={classes.point} />
-                    )
-                  }
-                  style={
-                    anchorEl === "NewMadisson"
-                      ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
-                  }
-                  label="NewMadisson"
-                  onClick={handleClick}
-                />
-                <Chip
-                  icon={
-                    anchorEl === "NextMilan" ? (
-                      <DoneRoundedIcon className={classes.juste} />
-                    ) : (
-                      <FiberManualRecordIcon className={classes.point} />
-                    )
-                  }
-                  style={
-                    anchorEl === "NextMilan"
-                      ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
-                  }
-                  label="NextMilan"
-                  onClick={handleClick}
-                />
-                <Chip
-                  icon={
-                    anchorEl === "NextParis" ? (
-                      <DoneRoundedIcon className={classes.juste} />
-                    ) : (
-                      <FiberManualRecordIcon className={classes.point} />
-                    )
-                  }
-                  style={
-                    anchorEl === "NextParis"
-                      ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
-                  }
-                  label="NextParis"
-                  onClick={handleClick}
-                />
+                {agencies.map((agency) => (
+                  <Chip
+                    icon={
+                      anchorEl === agency.id ? (
+                        <DoneRoundedIcon className={classes.juste} />
+                      ) : (
+                        <FiberManualRecordIcon className={classes.point} />
+                      )
+                    }
+                    style={
+                      anchorEl === agency.id
+                        ? { backgroundColor: "#007AFF", color: "white" }
+                        : {
+                            backgroundColor: "#F8F8F8",
+                            color: "black",
+                            border: "1px solid #E9E9E9",
+                          }
+                    }
+                    label={agency.name}
+                    id={agency.id}
+                    onClick={() => handleClick(agency.id)}
+                  />
+                ))}
               </ListItem>
               <Divider
                 className={classes.dividerColor}
@@ -452,7 +466,9 @@ const Filters = () => {
               />
               <span
                 style={{
-                  marginLeft: "14px",
+                  letterSpacing: 0,
+
+                  marginLeft: "12px",
                   color: "#A3A3A3",
                   fontSize: "12px",
                   fontWeight: "700",
@@ -471,16 +487,20 @@ const Filters = () => {
               <ListItem className={classes.chip}>
                 <Chip
                   icon={
-                    anchorEl1 === "All" ? (
+                    anchorEl1 === "" ? (
                       <DoneRoundedIcon className={classes.juste} />
                     ) : (
                       <FiberManualRecordIcon className={classes.point} />
                     )
                   }
                   style={
-                    anchorEl1 === "All"
+                    anchorEl1 === ""
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="All"
                   onClick={handleClick1}
@@ -496,7 +516,11 @@ const Filters = () => {
                   style={
                     anchorEl1 === "Black"
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="Black"
                   onClick={handleClick1}
@@ -512,7 +536,11 @@ const Filters = () => {
                   style={
                     anchorEl1 === "Brown"
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="Brown"
                   onClick={handleClick1}
@@ -528,7 +556,11 @@ const Filters = () => {
                   style={
                     anchorEl1 === "Green"
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="Green"
                   onClick={handleClick1}
@@ -544,7 +576,11 @@ const Filters = () => {
                   style={
                     anchorEl1 === "Blue"
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="Blue"
                   onClick={handleClick1}
@@ -556,7 +592,9 @@ const Filters = () => {
               />
               <span
                 style={{
-                  marginLeft: "14px",
+                  letterSpacing: 0,
+
+                  marginLeft: "12px",
                   color: "#A3A3A3",
                   fontSize: "12px",
                   fontWeight: "700",
@@ -584,7 +622,11 @@ const Filters = () => {
                   style={
                     anchorEl2 === "All"
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="All"
                   onClick={handleClick2}
@@ -600,7 +642,11 @@ const Filters = () => {
                   style={
                     anchorEl2 === "White"
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="White"
                   onClick={handleClick2}
@@ -616,7 +662,11 @@ const Filters = () => {
                   style={
                     anchorEl2 === "Dark"
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="Dark"
                   onClick={handleClick2}
@@ -632,7 +682,11 @@ const Filters = () => {
                   style={
                     anchorEl2 === "Yellow"
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="Yellow"
                   onClick={handleClick2}
@@ -648,7 +702,11 @@ const Filters = () => {
                   style={
                     anchorEl2 === "Caucasian"
                       ? { backgroundColor: "#007AFF", color: "white" }
-                      : { backgroundColor: "#F8F8F8", color: "black" }
+                      : {
+                          backgroundColor: "#F8F8F8",
+                          color: "black",
+                          border: "1px solid #E9E9E9",
+                        }
                   }
                   label="Caucasian"
                   onClick={handleClick2}

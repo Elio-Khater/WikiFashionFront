@@ -3,7 +3,6 @@ import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Menu from "@material-ui/core/Menu";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -168,36 +167,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Stats = () => {
-  const StatData = {
-    id: 1,
-    chestcm: "85cm",
-    chestinch: "33''",
-    hair: "blonde",
-    waistinch: "24'",
-    waistcm: "62cm",
-    heightinch: "5'10.5''",
-    heightcm: "179cm",
-    hipsinch: "36''",
-    hipscm: "93cm",
-    eyes: "blue",
-    shoeam: "6",
-    shoeeu: "40",
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const nextPath = (path) => {
-    history.push(path);
-  };
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
-  const [value, setValue] = React.useState("");
   const history = useHistory();
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();
   let { id } = useParams();
   const [stat, setStat] = useState([]);
@@ -223,7 +193,7 @@ const Stats = () => {
               style={{ color: "#007AFF" }}
             >
               <ArrowBackIosRoundedIcon
-                style={{ fontSize: "1.8rem", zIndex: "2000" }}
+                style={{ fontSize: "1.6rem", zIndex: "2000" }}
               />
             </IconButton>
           </div>
@@ -364,7 +334,7 @@ const Stats = () => {
                   aria-label="comments"
                   className={classes.icon}
                 >
-                  {stat.shoeam}
+                  {stat.shoeus}
                   <FiberManualRecordIcon
                     style={{ padding: "0 3em", fontSize: "0.5rem" }}
                   />

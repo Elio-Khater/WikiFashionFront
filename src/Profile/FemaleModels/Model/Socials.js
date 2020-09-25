@@ -1,23 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Menu from "@material-ui/core/Menu";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounded";
-import MinimizeIcon from "@material-ui/icons/Minimize";
 import {
   createMuiTheme,
   makeStyles,
   MuiThemeProvider,
 } from "@material-ui/core/styles";
 import { ListItemSecondaryAction } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import UserServices from "../../../Services/UserServices";
 
 const theme = createMuiTheme({
   overrides: {
@@ -144,32 +143,43 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Socials = () => {
-  const SocialsData = [
-    { id: 1, name: "Instagram", quantity: "5K" },
-    { id: 2, name: "Facebook", quantity: "1M" },
-    { id: 3, name: "TikTok", quantity: 0 },
-    { id: 4, name: "Twitter", quantity: 0 },
-    { id: 5, name: "Youtube", quantity: "22.1M" },
-  ];
-  const [socials] = useState(SocialsData);
+  let { id } = useParams();
+  const [socials, setSocials] = useState([]);
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const nextPath = (path) => {
-    history.push(path);
-  };
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
-  const [value, setValue] = React.useState("");
   const history = useHistory();
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();
-
+  useEffect(() => {
+    async function fetchData() {
+      const result = await UserServices.getUserById(id);
+      setSocials(result.data);
+    }
+    fetchData();
+  }, []);
+  const redirect = (urlinsta) => {
+    if (urlinsta !== null) {
+      window.location.href = urlinsta;
+    }
+  };
+  const redirect1 = (urlfacebook) => {
+    if (urlfacebook !== null) {
+      window.location.href = urlfacebook;
+    }
+  };
+  const redirect2 = (urltiktok) => {
+    if (urltiktok !== null) {
+      window.location.href = urltiktok;
+    }
+  };
+  const redirect3 = (urltwitter) => {
+    if (urltwitter !== null) {
+      window.location.href = urltwitter;
+    }
+  };
+  const redirect4 = (urlyoutube) => {
+    if (urlyoutube !== null) {
+      window.location.href = urlyoutube;
+    }
+  };
   return (
     <div className={classes.bggrey}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -182,7 +192,7 @@ const Socials = () => {
             style={{ color: "#007AFF" }}
           >
             <ArrowBackIosRoundedIcon
-              style={{ fontSize: "1.8rem", zIndex: "2000" }}
+              style={{ fontSize: "1.6rem", zIndex: "2000" }}
             />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
@@ -198,34 +208,109 @@ const Socials = () => {
         aria-label="mailbox folders"
       >
         <MuiThemeProvider theme={theme}>
-          {socials.map((social, index) => (
-            <div className={classes.row}>
-              <ListItem>
-                <ListItemText
-                  style={{ padding: "5px 0" }}
-                  primary={social.name}
-                />
+          <div className={classes.row}>
+            <ListItem button onClick={() => redirect(socials.urlinsta)}>
+              <ListItemText style={{ padding: "5px 0" }} primary="Instagram" />
 
-                <ListItemSecondaryAction>
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    aria-label="comments"
-                    className={classes.icon}
-                  >
-                    {social.quantity === 0 ? "-" : social.quantity}
-                    <ArrowForwardIosRoundedIcon
-                      fontSize="small"
-                      style={{ paddingLeft: "0.8em" }}
-                    />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              {index !== socials.length - 1 && (
-                <Divider className={classes.dividerColor} />
-              )}
-            </div>
-          ))}
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  <ArrowForwardIosRoundedIcon
+                    fontSize="small"
+                    style={{ paddingLeft: "0.8em" }}
+                  />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem button onClick={() => redirect1(socials.urlfacebook)}>
+              <ListItemText style={{ padding: "5px 0" }} primary="Facebook" />
+
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  <ArrowForwardIosRoundedIcon
+                    fontSize="small"
+                    style={{ paddingLeft: "0.8em" }}
+                  />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem button onClick={() => redirect2(socials.urltiktok)}>
+              <ListItemText style={{ padding: "5px 0" }} primary="TikTok" />
+
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  <ArrowForwardIosRoundedIcon
+                    fontSize="small"
+                    style={{ paddingLeft: "0.8em" }}
+                  />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem button onClick={() => redirect3(socials.urltwitter)}>
+              <ListItemText style={{ padding: "5px 0" }} primary="Twitter" />
+
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  <ArrowForwardIosRoundedIcon
+                    fontSize="small"
+                    style={{ paddingLeft: "0.8em" }}
+                  />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+
+            <Divider className={classes.dividerColor} />
+          </div>
+          <div className={classes.row}>
+            <ListItem button onClick={() => redirect4(socials.urlyoutube)}>
+              <ListItemText style={{ padding: "5px 0" }} primary="Youtube" />
+
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="comments"
+                  className={classes.icon}
+                >
+                  <ArrowForwardIosRoundedIcon
+                    fontSize="small"
+                    style={{ paddingLeft: "0.8em" }}
+                  />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          </div>
         </MuiThemeProvider>
       </List>
     </div>
